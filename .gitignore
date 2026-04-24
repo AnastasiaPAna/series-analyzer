@@ -50,3 +50,7 @@ src/main/resources/static/spa/
 # VS Code
 
 .vscode/
+
+# Local study materials / task packs
+
+Task_And_Pack/
