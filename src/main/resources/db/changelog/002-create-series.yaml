@@ -1,0 +1,57 @@
+databaseChangeLog:
+  - changeSet:
+      id: 002-create-series
+      author: series
+      changes:
+        - createTable:
+            tableName: series
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+
+              - column:
+                  name: title
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: genre
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: seasons
+                  type: INT
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: rating
+                  type: DOUBLE
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: year
+                  type: INT
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: finished
+                  type: BOOLEAN
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: studio_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false

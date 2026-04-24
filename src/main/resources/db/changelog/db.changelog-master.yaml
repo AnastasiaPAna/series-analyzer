@@ -1,0 +1,20 @@
+databaseChangeLog:
+
+  - include:
+      file: db/changelog/001-create-studio.yaml
+
+  - include:
+      file: db/changelog/002-create-series.yaml
+
+  - include:
+      file: db/changelog/003-add-fk.yaml
+
+  - include:
+      file: db/changelog/004-seed-studios.yaml
+
+  - include:
+      file: db/changelog/005-seed-series.yaml
+      context: seed
+
+  - include:
+      file: db/changelog/006-fix-sequences.yaml

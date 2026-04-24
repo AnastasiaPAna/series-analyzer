@@ -1,0 +1,227 @@
+{
+  "info": {
+    "_postman_id": "6b7d4e5f-2a2f-4c5e-9f57-8f9a2f0d2a11",
+    "name": "Series API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Studios",
+      "item": [
+        {
+          "name": "Get all studios",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v1/studios"
+          }
+        },
+        {
+          "name": "Create studio",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Test Studio\",\n  \"country\": \"UA\"\n}"
+            },
+            "url": "{{baseUrl}}/api/v1/studios"
+          }
+        },
+        {
+          "name": "Update studio",
+          "request": {
+            "method": "PUT",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Test Studio Updated\",\n  \"country\": \"UA\"\n}"
+            },
+            "url": "{{baseUrl}}/api/v1/studios/{{studioId}}"
+          }
+        },
+        {
+          "name": "Delete studio",
+          "request": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/api/v1/studios/{{studioId}}"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Series",
+      "item": [
+        {
+          "name": "Get all series",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v1/series"
+          }
+        },
+        {
+          "name": "Get series (paged)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/series?page=0&size=10&sort=rating,desc",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "series"],
+              "query": [
+                {"key": "page", "value": "0"},
+                {"key": "size", "value": "10"},
+                {"key": "sort", "value": "rating,desc"}
+              ]
+            }
+          }
+        },
+        {
+          "name": "Create series",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Test Series\",\n  \"genre\": \"Drama\",\n  \"seasons\": 1,\n  \"rating\": 8.1,\n  \"year\": 2020,\n  \"finished\": false,\n  \"studioId\": {{studioId}}\n}"
+            },
+            "url": "{{baseUrl}}/api/v1/series"
+          }
+        },
+        {
+          "name": "Get series by id",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v1/series/{{seriesId}}"
+          }
+        },
+        {
+          "name": "Update series",
+          "request": {
+            "method": "PUT",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Test Series Updated\",\n  \"genre\": \"Drama\",\n  \"seasons\": 2,\n  \"rating\": 8.5,\n  \"year\": 2021,\n  \"finished\": true,\n  \"studioId\": {{studioId}}\n}"
+            },
+            "url": "{{baseUrl}}/api/v1/series/{{seriesId}}"
+          }
+        },
+        {
+          "name": "Delete series",
+          "request": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/api/v1/series/{{seriesId}}"
+          }
+        },
+        {
+          "name": "List series (paged + filters)",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"studioId\": {{studioId}},\n  \"minRating\": 8.0,\n  \"page\": 1,\n  \"size\": 20,\n  \"sortBy\": \"rating\",\n  \"direction\": \"DESC\"\n}"
+            },
+            "url": "{{baseUrl}}/api/v1/series/_list"
+          }
+        },
+        {
+          "name": "Report (sync)",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"format\": \"csv\",\n  \"studioId\": {{studioId}}\n}"
+            },
+            "url": "{{baseUrl}}/api/v1/series/_report"
+          }
+        },
+        {
+          "name": "Report (async)",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"format\": \"csv\",\n  \"async\": true\n}"
+            },
+            "url": "{{baseUrl}}/api/v1/series/_report"
+          }
+        },
+        {
+          "name": "Download report by jobId",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v1/series/_report/{{jobId}}"
+          }
+        },
+        {
+          "name": "Upload series JSON",
+          "request": {
+            "method": "POST",
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "file",
+                  "type": "file",
+                  "src": "data/series.json"
+                }
+              ]
+            },
+            "url": "{{baseUrl}}/api/v1/series/upload"
+          }
+        },
+        {
+          "name": "Top series",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/series/top?limit=5",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "series", "top"],
+              "query": [{"key": "limit", "value": "5"}]
+            }
+          }
+        },
+        {
+          "name": "Search series by title",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/series/search?query=Test",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "series", "search"],
+              "query": [{"key": "query", "value": "Test"}]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Statistics",
+      "item": [
+        {
+          "name": "Statistics by studio",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v1/statistics/studio"
+          }
+        },
+        {
+          "name": "Statistics by genre",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v1/statistics/genre"
+          }
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {"key": "baseUrl", "value": "http://localhost:9090"},
+    {"key": "studioId", "value": "1"},
+    {"key": "seriesId", "value": "1"},
+    {"key": "jobId", "value": ""}
+  ]
+}

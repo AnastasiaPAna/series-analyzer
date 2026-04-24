@@ -1,0 +1,48 @@
+databaseChangeLog:
+  - changeSet:
+      id: 004-seed-studios
+      author: series
+      context: seed
+      changes:
+
+        - insert:
+            tableName: studios
+            columns:
+              - column: { name: id, valueNumeric: 1 }
+              - column: { name: name, value: "21 Laps Entertainment" }
+              - column: { name: country, value: "USA" }
+
+        - insert:
+            tableName: studios
+            columns:
+              - column: { name: id, valueNumeric: 2 }
+              - column: { name: name, value: "MGM Television" }
+              - column: { name: country, value: "USA" }
+
+        - insert:
+            tableName: studios
+            columns:
+              - column: { name: id, valueNumeric: 3 }
+              - column: { name: name, value: "Warner Bros. Television" }
+              - column: { name: country, value: "USA" }
+
+        - insert:
+            tableName: studios
+            columns:
+              - column: { name: id, valueNumeric: 4 }
+              - column: { name: name, value: "Sony Pictures Television" }
+              - column: { name: country, value: "USA" }
+
+        - insert:
+            tableName: studios
+            columns:
+              - column: { name: id, valueNumeric: 5 }
+              - column: { name: name, value: "HBO" }
+              - column: { name: country, value: "USA" }
+
+        - insert:
+            tableName: studios
+            columns:
+              - column: { name: id, valueNumeric: 6 }
+              - column: { name: name, value: "IDW Entertainment" }
+              - column: { name: country, value: "USA" }

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: layout(~{::content})}">
+
+<body>
+
+<div th:fragment="content">
+
+    <h2 class="mb-4">Statistics</h2>
+
+    <form method="get" th:action="@{/statistics}" class="mb-4">
+        <div class="input-group">
+            <select name="attribute" class="form-select">
+                <option value="year">Year</option>
+                <option value="rating">Rating</option>
+                <option value="seasons">Seasons</option>
+                <option value="finished">Finished</option>
+            </select>
+            <button class="btn btn-dark">Show</button>
+        </div>
+    </form>
+
+    <div class="card shadow-sm" th:if="${stats}">
+        <div class="card-body">
+            <ul class="list-group">
+                <li class="list-group-item d-flex justify-content-between"
+                    th:each="entry : ${stats}">
+                    <span th:text="${entry.key}"></span>
+                    <span class="badge bg-primary"
+                          th:text="${entry.value}"></span>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+</div>
+
+</body>
+</html>

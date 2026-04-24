@@ -1,0 +1,118 @@
+[
+  {
+    "title": "Дуже дивні дива",
+    "genre": "Science Fiction, Horror, Mystery, Drama, Adventure",
+    "seasons": 5,
+    "rating": 8.7,
+    "year": 2016,
+    "finished": true,
+    "studio": {
+      "name": "21 Laps Entertainment",
+      "country": "USA"
+    }
+  },
+
+  {
+    "title": "Венздей",
+    "genre": "Mystery, Comedy, Fantasy, Detective, Teen Drama",
+    "seasons": 2,
+    "rating": 8.1,
+    "year": 2022,
+    "finished": false,
+    "studio": {
+      "name": "MGM Television",
+      "country": "USA"
+    }
+  },
+
+  {
+    "title": "Щоденники вампіра",
+    "genre": "Fantasy, Drama, Romance, Supernatural, Horror",
+    "seasons": 8,
+    "rating": 7.7,
+    "year": 2009,
+    "finished": true,
+    "studio": {
+      "name": "Warner Bros. Television",
+      "country": "USA"
+    }
+  },
+
+  {
+    "title": "Первородні",
+    "genre": "Fantasy, Drama, Supernatural, Horror",
+    "seasons": 5,
+    "rating": 8.3,
+    "year": 2013,
+    "finished": true,
+    "studio": {
+      "name": "Warner Bros. Television",
+      "country": "USA"
+    }
+  },
+
+  {
+    "title": "Спадок",
+    "genre": "Fantasy, Drama, Adventure, Supernatural",
+    "seasons": 4,
+    "rating": 7.3,
+    "year": 2018,
+    "finished": true,
+    "studio": {
+      "name": "Warner Bros. Television",
+      "country": "USA"
+    }
+  },
+
+  {
+    "title": "Щит",
+    "genre": "Crime, Drama, Thriller",
+    "seasons": 7,
+    "rating": 8.7,
+    "year": 2002,
+    "finished": true,
+    "studio": {
+      "name": "Sony Pictures Television",
+      "country": "USA"
+    }
+  },
+
+  {
+    "title": "Хороший лікар",
+    "genre": "Medical Drama",
+    "seasons": 7,
+    "rating": 8.0,
+    "year": 2017,
+    "finished": false,
+    "studio": {
+      "name": "Sony Pictures Television",
+      "country": "USA"
+    }
+  },
+
+  {
+    "title": "Ключі Локів",
+    "genre": "Fantasy, Drama, Adventure, Political Drama",
+    "seasons": 3,
+    "rating": 7.4,
+    "year": 2020,
+    "finished": true,
+    "studio": {
+      "name": "HBO",
+      "country": "USA"
+    }
+  },
+
+  {
+    "title": "Гра престолів",
+    "genre": "Fantasy, Mystery, Drama, Horror",
+    "seasons": 8,
+    "rating": 9.2,
+    "year": 2011,
+    "finished": true,
+    "studio": {
+      "name": "IDW Entertainment",
+      "country": "USA"
+    }
+  }
+]

@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: layout(~{::content})}">
+
+<div th:fragment="content">
+    <div id="app"
+         class="dashboard-shell"
+         th:attr="data-initial-view=${initialView},data-reviews-api-base=${reviewsApiBaseUrl}">
+
+        <section class="hero-panel mb-4 mb-lg-5">
+            <div class="hero-copy">
+                <p class="eyebrow" data-i18n="hero.eyebrow">Blocks 3 + 4</p>
+                <h1 data-i18n="hero.title">One dashboard for series, studios, reports, imports and reviews.</h1>
+                <p class="hero-text" data-i18n="hero.text">
+                    Choose a series, manage the catalog and leave reviews in one place.
+                </p>
+                <form id="hero-search-form" class="hero-search-bar">
+                    <div class="hero-search-input">
+                        <label class="visually-hidden" for="hero-search" data-i18n="search.label">Search</label>
+                        <input id="hero-search" class="form-control form-control-lg"
+                               data-i18n-placeholder="search.placeholder"
+                               placeholder="Search by title, studio or genre">
+                    </div>
+                    <button class="btn btn-light btn-lg" type="submit" data-i18n="search.cta">Find series</button>
+                </form>
+                <div class="hero-actions">
+                    <a class="btn btn-dark btn-lg" href="#catalog-section" data-i18n="hero.catalog">Open catalog</a>
+                    <a class="btn btn-outline-dark btn-lg" href="#toolbox-section" data-i18n="hero.tools">Open tools</a>
+                    <button id="hero-add-series-btn" class="btn btn-accent btn-lg" type="button" data-i18n="hero.addSeries">Create new series</button>
+                </div>
+            </div>
+
+            <div class="hero-stats">
+                <div class="metric-card">
+                    <span class="metric-label" data-i18n="metrics.series">Series</span>
+                    <strong id="metric-series-count">0</strong>
+                </div>
+                <div class="metric-card">
+                    <span class="metric-label" data-i18n="metrics.studios">Studios</span>
+                    <strong id="metric-studios-count">0</strong>
+                </div>
+                <div class="metric-card">
+                    <span class="metric-label" data-i18n="metrics.rating">Average rating</span>
+                    <strong id="metric-rating-average">0.0</strong>
+                </div>
+                <div class="metric-card">
+                    <span class="metric-label" data-i18n="metrics.finished">Finished series</span>
+                    <strong id="metric-finished-count">0</strong>
+                </div>
+            </div>
+        </section>
+
+        <section id="catalog-section" class="section-card mb-4">
+            <div class="section-head">
+                <div>
+                    <p class="section-kicker" data-i18n="catalog.kicker">Catalog</p>
+                    <h2 data-i18n="catalog.title">Manage series and review activity</h2>
+                </div>
+                <div class="section-actions">
+                    <button id="refresh-series-btn" class="btn btn-outline-dark" data-i18n="catalog.refresh">Refresh</button>
+                    <button id="new-series-btn" class="btn btn-dark" data-i18n="catalog.addSeries">Add series</button>
+                </div>
+            </div>
+
+            <form id="series-filters-form" class="row g-3 mb-4">
+                <div class="col-12 col-lg-4">
+                    <label class="form-label" for="filter-search" data-i18n="search.label">Search</label>
+                    <input id="filter-search" name="search" class="form-control"
+                           data-i18n-placeholder="catalog.filterSearch"
+                           placeholder="Title or studio">
+                </div>
+                <div class="col-6 col-lg-2">
+                    <label class="form-label" for="filter-studio" data-i18n="catalog.filterStudio">Studio</label>
+                    <select id="filter-studio" name="studioId" class="form-select">
+                        <option value="" data-i18n="catalog.allStudios">All studios</option>
+                    </select>
+                </div>
+                <div class="col-6 col-lg-2">
+                    <label class="form-label" for="filter-genre" data-i18n="catalog.filterGenre">Genre</label>
+                    <input id="filter-genre" name="genre" class="form-control" list="genre-list"
+                           data-i18n-placeholder="catalog.genrePlaceholder"
+                           placeholder="Drama">
+                </div>
+                <div class="col-6 col-lg-2">
+                    <label class="form-label" for="filter-year" data-i18n="catalog.filterYear">Year</label>
+                    <input id="filter-year" name="year" type="number" min="1900" max="2100"
+                           data-i18n-placeholder="catalog.yearPlaceholder"
+                           class="form-control" placeholder="2024">
+                </div>
+                <div class="col-6 col-lg-2">
+                    <label class="form-label" for="filter-min-rating" data-i18n="catalog.filterMinRating">Min rating</label>
+                    <input id="filter-min-rating" name="minRating" type="number"
+                           data-i18n-placeholder="catalog.ratingPlaceholder"
+                           min="0" max="10" step="0.1" class="form-control" placeholder="8.0">
+                </div>
+                <div class="col-6 col-lg-2">
+                    <label class="form-label" for="filter-sort-by" data-i18n="catalog.sortBy">Sort by</label>
+                    <select id="filter-sort-by" name="sortBy" class="form-select">
+                        <option value="title" data-i18n="series.title">Title</option>
+                        <option value="rating" data-i18n="series.rating">Rating</option>
+                        <option value="year" data-i18n="series.year">Year</option>
+                        <option value="seasons" data-i18n="series.seasons">Seasons</option>
+                    </select>
+                </div>
+                <div class="col-6 col-lg-2">
+                    <label class="form-label" for="filter-direction" data-i18n="catalog.direction">Direction</label>
+                    <select id="filter-direction" name="direction" class="form-select">
+                        <option value="desc" data-i18n="catalog.desc">Desc</option>
+                        <option value="asc" data-i18n="catalog.asc">Asc</option>
+                    </select>
+                </div>
+                <div class="col-6 col-lg-2">
+                    <label class="form-label" for="filter-page-size" data-i18n="catalog.pageSize">Cards per page</label>
+                    <select id="filter-page-size" name="pageSize" class="form-select">
+                        <option value="6">6</option>
+                        <option value="9">9</option>
+                        <option value="12">12</option>
+                    </select>
+                </div>
+                <div class="col-6 col-lg-2 d-flex align-items-end">
+                    <div class="form-check form-switch mb-2">
+                        <input class="form-check-input" type="checkbox" id="filter-top-mode" name="topMode">
+                        <label class="form-check-label" for="filter-top-mode" data-i18n="catalog.topMode">Top 5 mode</label>
+                    </div>
+                </div>
+                <div class="col-12 d-flex gap-2 flex-wrap">
+                    <button class="btn btn-dark" type="submit" data-i18n="catalog.apply">Apply filters</button>
+                    <button id="reset-filters-btn" class="btn btn-outline-secondary" type="button" data-i18n="catalog.reset">Reset</button>
+                    <button id="quick-search-btn" class="btn btn-outline-dark" type="button" data-i18n="catalog.apiSearch">Quick match</button>
+                </div>
+            </form>
+
+            <div class="genre-strip mb-4">
+                <div class="genre-strip-header">
+                    <span class="section-kicker" data-i18n="catalog.genreStrip">Quick genres</span>
+                    <button id="clear-genre-btn" type="button" class="btn btn-sm btn-outline-dark" data-i18n="catalog.clearGenre">Clear genre</button>
+                </div>
+                <div id="genre-chips" class="genre-chips"></div>
+            </div>
+
+            <div class="catalog-toolbar mb-3">
+                <div id="catalog-summary" class="text-muted small"></div>
+                <div id="catalog-feedback" class="small"></div>
+            </div>
+
+            <div id="series-grid" class="series-grid"></div>
+
+            <div class="d-flex justify-content-between align-items-center mt-4 flex-wrap gap-3">
+                <button id="prev-page-btn" class="btn btn-outline-dark" data-i18n="catalog.previous">Previous</button>
+                <div id="pagination-summary" class="small text-muted"></div>
+                <button id="next-page-btn" class="btn btn-outline-dark" data-i18n="catalog.next">Next</button>
+            </div>
+        </section>
+
+        <section id="reviews-section" class="section-card mb-4">
+            <div class="section-head">
+                <div>
+                    <p class="section-kicker" data-i18n="reviews.kicker">Reviews for series</p>
+                    <h2 id="reviewsOffcanvasLabel" data-i18n="reviews.title">Reviews for the selected series</h2>
+                </div>
+                <div class="section-actions">
+                    <button id="show-more-reviews-btn" class="btn btn-outline-dark" type="button" disabled data-i18n="reviews.showMore">Show more</button>
+                    <button id="add-review-btn" class="btn btn-dark" type="button" disabled data-i18n="reviews.add">Add review</button>
+                </div>
+            </div>
+            <div class="review-composer mb-3">
+                <div class="review-composer-copy">
+                    <span class="section-kicker" data-i18n="reviews.composerTitle">Write a review</span>
+                    <h3 id="reviews-context-title" class="review-context-title" data-i18n="reviews.noSelection">Choose a series in the catalog</h3>
+                    <p id="reviews-context-meta" class="review-context-meta" data-i18n="reviews.noSelectionHelp">Then reviews for that series will appear right here on this page.</p>
+                </div>
+            </div>
+            <div id="reviews-feedback" class="small mb-3"></div>
+            <div id="reviews-list" class="reviews-list"></div>
+        </section>
+
+        <section id="studios-section" class="section-card mb-4">
+            <div class="section-head">
+                <div>
+                    <p class="section-kicker" data-i18n="studios.kicker">Studios</p>
+                    <h2 data-i18n="studios.title">Manage reference data</h2>
+                </div>
+                <button id="new-studio-btn" class="btn btn-dark" data-i18n="studios.add">Add studio</button>
+            </div>
+            <div id="studios-feedback" class="small mb-3"></div>
+            <div id="studios-grid" class="studio-grid"></div>
+        </section>
+
+        <section id="statistics-section" class="section-card mb-4">
+            <div class="section-head">
+                <div>
+                    <p class="section-kicker" data-i18n="statistics.kicker">Statistics</p>
+                    <h2 data-i18n="statistics.title">Overview by selected attribute</h2>
+                </div>
+            </div>
+
+            <form id="statistics-form" class="row g-3 align-items-end mb-4">
+                <div class="col-12 col-lg-4">
+                    <label class="form-label" for="statistics-attribute" data-i18n="statistics.attribute">Attribute</label>
+                    <select id="statistics-attribute" class="form-select">
+                        <option value="genre" data-i18n="series.genre">Genre</option>
+                        <option value="studio" data-i18n="series.studio">Studio</option>
+                        <option value="year" data-i18n="series.year">Year</option>
+                        <option value="rating" data-i18n="series.rating">Rating</option>
+                        <option value="seasons" data-i18n="series.seasons">Seasons</option>
+                        <option value="finished" data-i18n="series.finished">Finished</option>
+                        <option value="title" data-i18n="series.title">Title</option>
+                    </select>
+                </div>
+                <div class="col-12 col-lg-8 d-flex gap-2 flex-wrap">
+                    <button class="btn btn-dark" type="submit" data-i18n="statistics.load">Load statistics</button>
+                    <div id="statistics-feedback" class="small align-self-center"></div>
+                </div>
+            </form>
+
+            <div id="statistics-bars" class="stats-bars"></div>
+        </section>
+
+        <section id="toolbox-section" class="section-card">
+            <div class="section-head">
+                <div>
+                    <p class="section-kicker" data-i18n="tools.kicker">Toolbox</p>
+                    <h2 data-i18n="tools.title">Reports and JSON import</h2>
+                </div>
+            </div>
+
+            <div class="row g-4">
+                <div class="col-12 col-xl-6">
+                    <div class="tool-card h-100">
+                        <h3 data-i18n="tools.reportTitle">Generate report</h3>
+                        <p class="text-muted" data-i18n-html="tools.reportText">
+                            Generate a report based on the current filters.
+                        </p>
+
+                        <form id="report-form" class="row g-3">
+                            <div class="col-md-4">
+                                <label class="form-label" for="report-format" data-i18n="tools.format">Format</label>
+                                <select id="report-format" class="form-select">
+                                    <option value="csv">CSV</option>
+                                    <option value="xlsx">XLSX</option>
+                                    <option value="json">JSON</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-check form-switch mt-md-4 pt-md-2">
+                                    <input class="form-check-input" type="checkbox" id="report-async">
+                                    <label class="form-check-label" for="report-async" data-i18n="tools.async">Async mode</label>
+                                </div>
+                            </div>
+                            <div class="col-12 d-flex gap-2 flex-wrap">
+                                <button class="btn btn-dark" type="submit" data-i18n="tools.generate">Generate</button>
+                                <span id="report-feedback" class="small align-self-center"></span>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="col-12 col-xl-6">
+                    <div class="tool-card h-100">
+                        <h3 data-i18n="tools.importTitle">Import JSON file</h3>
+                        <p class="text-muted" data-i18n-html="tools.importText">
+                            Import a JSON list of series right into the catalog.
+                        </p>
+
+                        <form id="upload-form" class="row g-3">
+                            <div class="col-12">
+                                <label class="form-label" for="upload-file" data-i18n="tools.chooseFile">Choose file</label>
+                                <input id="upload-file" type="file" accept=".json,application/json"
+                                       class="form-control">
+                            </div>
+                            <div class="col-12 d-flex gap-2 flex-wrap">
+                                <button class="btn btn-dark" type="submit" data-i18n="tools.upload">Upload</button>
+                                <span id="upload-feedback" class="small align-self-center"></span>
+                            </div>
+                        </form>
+
+                        <div id="upload-result" class="upload-result mt-3"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <div class="developer-dock" aria-label="Developer mode">
+            <div class="developer-dock-copy">
+                <span class="section-kicker">Режим розробника</span>
+                <strong>Показати інструменти керування</strong>
+                <p class="mb-0">Увімкни редагування, видалення та блок звітів лише тоді, коли це потрібно.</p>
+            </div>
+            <label class="developer-toggle" for="developer-mode-toggle">
+                <input id="developer-mode-toggle" type="checkbox">
+                <span class="developer-toggle-track">
+                    <span class="developer-toggle-thumb"></span>
+                </span>
+            </label>
+        </div>
+
+        <div class="modal fade" id="seriesModal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-lg modal-dialog-centered">
+                <div class="modal-content">
+                    <form id="series-form">
+                        <div class="modal-header">
+                            <h5 id="series-modal-title" class="modal-title" data-i18n="series.addModal">Add series</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="modal-banner modal-banner-accent">
+                                <strong data-i18n="series.bannerTitle">Create a new title</strong>
+                                <span data-i18n="series.bannerText">Add the genre, studio, rating and release year in one place.</span>
+                            </div>
+                            <input type="hidden" id="series-id">
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label class="form-label" for="series-title" data-i18n="series.title">Title</label>
+                                    <input id="series-title" class="form-control" maxlength="120" required>
+                                    <div class="form-note">2-120 символів, без дивних спецсимволів.</div>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label" for="series-genre" data-i18n="series.genre">Genre</label>
+                                    <input id="series-genre" type="hidden" required>
+                                    <div class="genre-picker-shell">
+                                        <div class="genre-picker-controls">
+                                            <input id="series-genre-picker" class="form-control" list="genre-list" maxlength="30" placeholder="Обери або введи жанр">
+                                            <button id="series-genre-add-btn" class="btn btn-card-primary" type="button">Додати жанр</button>
+                                        </div>
+                                        <div id="series-selected-genres" class="selected-genre-chips"></div>
+                                    </div>
+                                    <div class="form-note">Можна вибрати від 1 до 3 жанрів. Підказки беруться з уже існуючих жанрів.</div>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label" for="series-seasons" data-i18n="series.seasons">Seasons</label>
+                                    <input id="series-seasons" type="number" min="1" max="60" class="form-control" required>
+                                    <div class="form-note">Від 1 до 60 сезонів.</div>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label" for="series-rating" data-i18n="series.rating">Rating</label>
+                                    <input id="series-rating" type="number" min="0" max="10" step="0.1" class="form-control" required>
+                                    <div class="form-note">Оцінка від 0 до 10, максимум 1 знак після коми.</div>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label" for="series-year" data-i18n="series.year">Year</label>
+                                    <input id="series-year" type="number" min="1950" max="2029" class="form-control" required>
+                                    <div id="series-year-hint" class="form-note">Якщо рік більший за 2026, це вважається анонсованим релізом.</div>
+                                </div>
+                                <div class="col-md-8">
+                                    <label class="form-label" for="series-studio" data-i18n="series.studio">Studio</label>
+                                    <select id="series-studio" class="form-select" required></select>
+                                    <div class="form-note">Студія має бути обрана зі списку.</div>
+                                </div>
+                                <div class="col-md-4 d-flex align-items-end">
+                                    <div class="form-check form-switch mb-2">
+                                        <input class="form-check-input" type="checkbox" id="series-finished">
+                                        <label class="form-check-label" for="series-finished" data-i18n="series.finished">Finished</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="series-form-feedback" class="small mt-3"></div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal" data-i18n="common.cancel">Cancel</button>
+                            <button class="btn btn-dark" type="submit" data-i18n="common.save">Save</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="studioModal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <form id="studio-form">
+                        <div class="modal-header">
+                            <h5 id="studio-modal-title" class="modal-title" data-i18n="studios.addModal">Add studio</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <input type="hidden" id="studio-id">
+                            <div class="mb-3">
+                                <label class="form-label" for="studio-name" data-i18n="studios.name">Name</label>
+                                <input id="studio-name" class="form-control" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label" for="studio-country" data-i18n="studios.country">Country</label>
+                                <input id="studio-country" class="form-control" required>
+                            </div>
+                            <div id="studio-form-feedback" class="small"></div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal" data-i18n="common.cancel">Cancel</button>
+                            <button class="btn btn-dark" type="submit" data-i18n="common.save">Save</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="reviewModal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <form id="review-form">
+                        <div class="modal-header">
+                            <h5 id="review-modal-title" class="modal-title" data-i18n="reviews.addModal">Add review</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="modal-banner modal-banner-calm">
+                                <strong data-i18n="reviews.modalBannerTitle">Helpful reviews win</strong>
+                                <span data-i18n="reviews.modalBannerText">Write what worked, what did not, and give a fair score from 1 to 10.</span>
+                            </div>
+                            <input type="hidden" id="review-series-id">
+                            <div class="mb-3">
+                                <label class="form-label" for="reviewer-name" data-i18n="reviews.reviewer">Reviewer name</label>
+                                <input id="reviewer-name" class="form-control" data-i18n-placeholder="reviews.reviewerPlaceholder" placeholder="Your name" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label" for="review-rating" data-i18n="reviews.rating">Rating</label>
+                                <input id="review-rating" type="number" min="1" max="10" step="0.1"
+                                       class="form-control" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label" for="review-comment" data-i18n="reviews.comment">Comment</label>
+                                <textarea id="review-comment" rows="5" class="form-control"
+                                          data-i18n-placeholder="reviews.commentPlaceholder"
+                                          placeholder="What did you like about the series?"
+                                          required></textarea>
+                            </div>
+                            <div id="review-form-feedback" class="small"></div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal" data-i18n="common.cancel">Cancel</button>
+                            <button class="btn btn-dark" type="submit" data-i18n="reviews.save">Save review</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <datalist id="genre-list"></datalist>
+    </div>
+</div>
+
+</html>

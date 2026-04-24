@@ -1,0 +1,105 @@
+databaseChangeLog:
+  - changeSet:
+      id: 005-seed-series
+      author: series
+      context: seed
+      changes:
+
+        - insert:
+            tableName: series
+            columns:
+              - column: { name: title, value: "Дуже дивні дива" }
+              - column: { name: genre, value: "Science Fiction, Horror, Mystery" }
+              - column: { name: seasons, valueNumeric: 5 }
+              - column: { name: rating, valueNumeric: 8.7 }
+              - column: { name: year, valueNumeric: 2016 }
+              - column: { name: finished, valueBoolean: true }
+              - column: { name: studio_id, valueNumeric: 1 }
+
+        - insert:
+            tableName: series
+            columns:
+              - column: { name: title, value: "Венздей" }
+              - column: { name: genre, value: "Mystery, Comedy, Fantasy" }
+              - column: { name: seasons, valueNumeric: 2 }
+              - column: { name: rating, valueNumeric: 8.1 }
+              - column: { name: year, valueNumeric: 2022 }
+              - column: { name: finished, valueBoolean: false }
+              - column: { name: studio_id, valueNumeric: 2 }
+
+        - insert:
+            tableName: series
+            columns:
+              - column: { name: title, value: "Щоденники вампіра" }
+              - column: { name: genre, value: "Fantasy, Drama, Romance" }
+              - column: { name: seasons, valueNumeric: 8 }
+              - column: { name: rating, valueNumeric: 7.7 }
+              - column: { name: year, valueNumeric: 2009 }
+              - column: { name: finished, valueBoolean: true }
+              - column: { name: studio_id, valueNumeric: 3 }
+
+        - insert:
+            tableName: series
+            columns:
+              - column: { name: title, value: "Первородні" }
+              - column: { name: genre, value: "Fantasy, Drama" }
+              - column: { name: seasons, valueNumeric: 5 }
+              - column: { name: rating, valueNumeric: 8.3 }
+              - column: { name: year, valueNumeric: 2013 }
+              - column: { name: finished, valueBoolean: true }
+              - column: { name: studio_id, valueNumeric: 3 }
+
+        - insert:
+            tableName: series
+            columns:
+              - column: { name: title, value: "Спадок" }
+              - column: { name: genre, value: "Fantasy, Adventure" }
+              - column: { name: seasons, valueNumeric: 4 }
+              - column: { name: rating, valueNumeric: 7.3 }
+              - column: { name: year, valueNumeric: 2018 }
+              - column: { name: finished, valueBoolean: true }
+              - column: { name: studio_id, valueNumeric: 3 }
+
+        - insert:
+            tableName: series
+            columns:
+              - column: { name: title, value: "Щит" }
+              - column: { name: genre, value: "Crime, Drama, Thriller" }
+              - column: { name: seasons, valueNumeric: 7 }
+              - column: { name: rating, valueNumeric: 8.7 }
+              - column: { name: year, valueNumeric: 2002 }
+              - column: { name: finished, valueBoolean: true }
+              - column: { name: studio_id, valueNumeric: 4 }
+
+        - insert:
+            tableName: series
+            columns:
+              - column: { name: title, value: "Хороший лікар" }
+              - column: { name: genre, value: "Medical Drama" }
+              - column: { name: seasons, valueNumeric: 7 }
+              - column: { name: rating, valueNumeric: 8.0 }
+              - column: { name: year, valueNumeric: 2017 }
+              - column: { name: finished, valueBoolean: false }
+              - column: { name: studio_id, valueNumeric: 4 }
+
+        - insert:
+            tableName: series
+            columns:
+              - column: { name: title, value: "Ключі Локів" }
+              - column: { name: genre, value: "Fantasy, Drama" }
+              - column: { name: seasons, valueNumeric: 3 }
+              - column: { name: rating, valueNumeric: 7.4 }
+              - column: { name: year, valueNumeric: 2020 }
+              - column: { name: finished, valueBoolean: true }
+              - column: { name: studio_id, valueNumeric: 5 }
+
+        - insert:
+            tableName: series
+            columns:
+              - column: { name: title, value: "Гра престолів" }
+              - column: { name: genre, value: "Fantasy, Drama, Mystery" }
+              - column: { name: seasons, valueNumeric: 8 }
+              - column: { name: rating, valueNumeric: 9.2 }
+              - column: { name: year, valueNumeric: 2011 }
+              - column: { name: finished, valueBoolean: true }
+              - column: { name: studio_id, valueNumeric: 6 }

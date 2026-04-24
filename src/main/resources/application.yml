@@ -1,0 +1,4 @@
+spring:
+  liquibase:
+    change-log: classpath:db/changelog/db.changelog-master.yaml
+    contexts: ${DB_SEED:false}

@@ -1,0 +1,12 @@
+databaseChangeLog:
+  - changeSet:
+      id: 003-add-fk-series-studio
+      author: series
+      changes:
+        - addForeignKeyConstraint:
+            baseTableName: series
+            baseColumnNames: studio_id
+            referencedTableName: studios
+            referencedColumnNames: id
+            constraintName: fk_series_studio
+            onDelete: CASCADE
