@@ -1,9 +1,0 @@
-{
-  "name": "block3-spa",
-  "version": "1.0.0",
-  "private": true,
-  "description": "Separate SPA frontend for Block 3",
-  "scripts": {
-    "build": "node ./scripts/build.mjs"
-  }
-}

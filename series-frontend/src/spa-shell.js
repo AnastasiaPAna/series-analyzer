@@ -84,7 +84,7 @@
   }
 
   document.addEventListener("click", function (event) {
-    const link = event.target.closest("[data-view-link]");
+    const link = event.target.closest("[data-view-link], [data-hero-view-link]");
     if (!link) {
       return;
     }
@@ -93,7 +93,7 @@
     }
 
     event.preventDefault();
-    handleView(link.dataset.viewLink || "home", false);
+    handleView(link.dataset.viewLink || link.dataset.heroViewLink || "home", false);
   });
 
   window.addEventListener("popstate", function () {

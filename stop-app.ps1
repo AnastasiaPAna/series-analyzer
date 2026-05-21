@@ -33,6 +33,8 @@ function Stop-ProcessOnPort {
 
 Stop-TrackedProcess (Join-Path $runtimeRoot "spring.pid")
 Stop-TrackedProcess (Join-Path $runtimeRoot "reviews.pid")
+Stop-TrackedProcess (Join-Path $runtimeRoot "frontend.pid")
+Stop-ProcessOnPort 3000
 Stop-ProcessOnPort 9090
 Stop-ProcessOnPort 3010
 
