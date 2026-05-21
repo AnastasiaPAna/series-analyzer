@@ -32,6 +32,19 @@
 - Node.js
 - Docker Desktop
 
+### Якщо проєкт перевіряють через Pull Request Block 3
+
+Для перевірки актуальної версії `Block 3` потрібно піднімати проєкт саме з гілки `block3-fix`, а не з `main`.
+
+Кроки на чистій машині:
+
+```powershell
+git clone https://github.com/AnastasiaPAna/series-analyzer.git
+cd series-analyzer
+git checkout block3-fix
+.\start-app.ps1
+```
+
 Запуск з кореня проєкту:
 
 ```powershell
