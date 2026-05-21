@@ -1,0 +1,91 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: series-analyzer-postgres-full
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: series_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_full_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d series_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  mongo:
+    image: mongo:7
+    container_name: series-analyzer-mongo-full
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_full_data:/data/db
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand({ ping: 1 })"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  spring-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: series-analyzer-spring-full
+    restart: unless-stopped
+    environment:
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: series_db
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+    depends_on:
+      postgres:
+        condition: service_healthy
+    ports:
+      - "9090:9090"
+
+  reviews-service:
+    build:
+      context: ./block4-reviews-service
+      dockerfile: Dockerfile
+    container_name: series-analyzer-reviews-full
+    restart: unless-stopped
+    environment:
+      APP_PORT: 3010
+      MONGODB_URI: mongodb://mongo:27017/series_reviews
+      ENTITY1_SERVICE_URL: http://spring-app:9090
+      REQUEST_TIMEOUT_MS: 5000
+    depends_on:
+      mongo:
+        condition: service_healthy
+      spring-app:
+        condition: service_started
+    ports:
+      - "3010:3010"
+
+  frontend:
+    build:
+      context: ./series-frontend
+      dockerfile: Dockerfile
+      args:
+        NEXT_PUBLIC_API_BASE_URL: http://localhost:9090/api/v1
+        NEXT_PUBLIC_REVIEWS_API_BASE_URL: http://localhost:3010
+        NEXT_PUBLIC_DEFAULT_LANGUAGE: ua
+    container_name: series-analyzer-frontend-full
+    restart: unless-stopped
+    depends_on:
+      spring-app:
+        condition: service_started
+      reviews-service:
+        condition: service_started
+    ports:
+      - "3000:3000"
+
+volumes:
+  postgres_full_data:
+  mongo_full_data:

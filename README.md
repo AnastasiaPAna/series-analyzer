@@ -32,18 +32,41 @@
 - Node.js
 - Docker Desktop
 
-### Якщо проєкт перевіряють через Pull Request Block 3
+### Актуальна гілка для Block 3
 
-Для перевірки актуальної версії `Block 3` потрібно піднімати проєкт саме з гілки `block3-fix`, а не з `main`.
+Для актуальної версії `Block 3` використовуй гілку `block3-fix`.
 
-Кроки на чистій машині:
+Запуск на чистій машині:
 
 ```powershell
 git clone https://github.com/AnastasiaPAna/series-analyzer.git
 cd series-analyzer
 git checkout block3-fix
-.\start-app.ps1
 ```
+
+### Запуск через Docker
+
+Якщо не хочеш встановлювати Java і Node.js на комп'ютер, можна підняти весь стек через Docker:
+
+```powershell
+.\start-app-docker.ps1
+```
+
+Цей сценарій піднімає:
+
+- PostgreSQL
+- MongoDB
+- Spring backend
+- reviews-service
+- frontend Block 3
+
+Зупинка:
+
+```powershell
+.\stop-app-docker.ps1
+```
+
+### Локальний запуск
 
 Запуск з кореня проєкту:
 
@@ -89,10 +112,6 @@ Frontend винесений в окремий проєкт `series-frontend/` і
 - CRUD для серіалів
 - локалізація `UA / EN`
 - інтеграція відгуків із Block 4 на сторінці серіалу
-
-Детальніше:
-
-- [series-frontend/README.md](./series-frontend/README.md)
 
 ## Block 4
 
