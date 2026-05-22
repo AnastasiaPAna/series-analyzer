@@ -42,6 +42,8 @@ git checkout block4-fix
 - Reviews health-check: `http://localhost:3010/health`
 - Reviews service page: `http://localhost:3010/`
 
+На чистій БД стартові студії та серіали підтягуються автоматично під час першого запуску.
+
 ## Що реалізовано
 
 У проєкті є:
