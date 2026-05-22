@@ -43,6 +43,8 @@ statistics_by_*.xml
 
 build/
 dist/
+.next/
+*.tsbuildinfo
 node_modules/
 coverage/
 src/main/resources/static/spa/

@@ -1,78 +1,53 @@
 # Series Analyzer
 
-Проєкт закриває завдання `1-4` курсу FullStack Developer в одному репозиторії:
+Проєкт закриває завдання `1-4` курсу FullStack Developer в одному репозиторії.
 
-- `Block 1` — консольна Java-логіка для роботи з даними серіалів
-- `Block 2` — Spring Boot REST API для `Series` і `Studios`
-- `Block 3` — окремий SPA frontend для каталогу, статистики, пошуку, CRUD і роботи з відгуками
-- `Block 4` — окремий Node.js + TypeScript reviews service на MongoDB
+## Що є в репозиторії
 
-Основна сторінка для демонстрації:
-- `http://localhost:9090/`
+- `Block 1` — консольна Java-логіка для завантаження, пошуку, фільтрації та експорту даних про серіали.
+- `Block 2` — Spring Boot REST API для `Series` і `Studios`.
+- `Block 3` — окремий frontend на `Next.js + Material UI + react-intl`, побудований на базовій архітектурі `ui-base-app-next`.
+- `Block 4` — окремий `Node.js + TypeScript` reviews service на `MongoDB`.
 
-Технічна перевірка reviews service:
-- `http://localhost:3010/health`
+## Основні URL
 
-## Технології
+- Frontend Block 3: `http://localhost:3000/`
+- Spring API: `http://localhost:9090/api/v1`
+- Reviews health-check: `http://localhost:3010/health`
 
-- Java 21
-- Spring Boot 3.2.5
-- Spring Web, Validation, Data JPA
-- PostgreSQL
-- Liquibase
-- Node.js
-- TypeScript
-- Express
-- MongoDB + Mongoose
-- Vanilla SPA frontend
-- Bootstrap 5
-- JUnit 5
-- Vitest / Supertest
-- Docker Compose
+## Структура
 
-## Структура проєкту
+- `src/main/java` — Spring Boot backend
+- `src/main/resources/db` — Liquibase changelog-и
+- `series-frontend/` — frontend для Block 3
+- `block4-reviews-service/` — сервіс відгуків для Block 4
+- `data/` — JSON-дані для імпорту
+- `postman/` — Postman collection
 
-- `src/main/java` — backend на Spring Boot
-- `src/main/resources/db` — Liquibase міграції та seed
-- `src/main/resources/static/spa` — зібраний frontend, який віддає Spring
-- `block3-spa/` — окремий SPA frontend для блоку 3
-- `block4-reviews-service/` — окремий reviews service для блоку 4
-- `data/` — приклади даних для імпорту
-- `postman/Series API.postman_collection.json` — Postman collection
-- `start-app.ps1`, `start-app.bat` — швидкий запуск
-- `stop-app.ps1` — зупинка сервісів і локальних БД
+## Швидкий запуск
 
-## Найпростіший запуск
-
-### Передумови
-
-Потрібно мати:
+Передумови:
 
 - Java 21
 - Node.js
 - Docker Desktop
 
-### Варіант 1. Один клік
-
-У корені проєкту:
-
-- запусти [start-app.bat](/d:/task_block1-main/task_block1-main/start-app.bat)
-
-Або в PowerShell:
+Запуск з кореня проєкту:
 
 ```powershell
 .\start-app.ps1
 ```
 
-Скрипт автоматично:
+Або подвійним кліком:
 
-- запустить Docker Desktop, якщо він вимкнений
-- підніме PostgreSQL і MongoDB
-- збере `block3-spa`, якщо були зміни
-- збере Spring Boot застосунок, якщо були зміни
-- збере reviews service, якщо були зміни
-- підніме обидва сервіси
-- відкриє `http://localhost:9090/`
+- `start-app.bat`
+
+Скрипт:
+
+- піднімає PostgreSQL і MongoDB через Docker
+- запускає frontend Block 3 на `3000`
+- запускає Spring backend на `9090`
+- запускає reviews-service на `3010`
 
 Зупинка:
 
@@ -80,158 +55,37 @@
 .\stop-app.ps1
 ```
 
-### Варіант 2. Ручний запуск
+## Block 3
 
-Підняти локальні БД:
+Frontend винесений в окремий проєкт `series-frontend/` і використовує стек із базового проєкту:
 
-```powershell
-docker compose up -d
-```
+- `Next.js`
+- `TypeScript`
+- `Material UI`
+- `react-intl`
 
-Потім у корені:
+Реалізовано:
 
-```powershell
-mvn -DskipTests package
-java -jar target\series-analyzer-1.0.0.jar
-```
+- головна сторінка
+- список серіалів `/series`
+- сторінка деталей `/series/[id]`
+- сторінка створення `/series/new`
+- сторінка `Top 5` `/top`
+- сторінка статистики `/statistics`
+- фільтри, пагінація і збереження query params
+- CRUD для серіалів
+- локалізація `UA / EN`
+- інтеграція відгуків із Block 4 на сторінці серіалу
 
-В окремому терміналі:
+Детальніше:
 
-```powershell
-cd block4-reviews-service
-npm install
-npm run build
-npm start
-```
+- [series-frontend/README.md](./series-frontend/README.md)
 
-Якщо окремо треба оновити frontend блоку 3:
+## Block 4
 
-```powershell
-cd block3-spa
-npm run build
-```
+Сервіс відгуків реалізований у `block4-reviews-service/`.
 
-## Доступні URL
-
-- Frontend: `http://localhost:9090/`
-- Series API: `http://localhost:9090/api/v1/series`
-- Studios API: `http://localhost:9090/api/v1/studios`
-- Statistics API: `http://localhost:9090/api/v1/statistics/{attribute}`
-- Reviews health-check: `http://localhost:3010/health`
-- Reviews API: `http://localhost:3010/api/entity3`
-
-## Що реалізовано по блоках
-
-### Block 1
-
-- завантаження та обробка даних серіалів
-- фільтрація, пошук, статистика
-- експорт
-- консольний сценарій роботи
-
-### Block 2
-
-- CRUD для `Studios`
-- CRUD для `Series`
-- пошук серіалів
-- top endpoint
-- пакетні endpoint-и `_list` і `_report`
-- імпорт JSON
-- endpoint статистики
-- валідація
-- інтеграційні та unit тести
-
-### Block 3
-
-- окремий SPA frontend у папці `block3-spa`
-- пошук серіалів
-- фільтри по студії, жанру, року, рейтингу, статусу
-- статус-фільтри `Finished / In progress / Planned`
-- створення, редагування й видалення серіалів
-- створення, редагування й видалення студій
-- перегляд статистики
-- імпорт JSON
-- генерація звітів
-- перемикач мов `UA / EN`
-- developer mode для керування службовими інструментами
-
-### Block 4
-
-- окремий Node.js reviews service у папці `block4-reviews-service`
-- `POST /api/entity3` — створення review
-- `GET /api/entity3` — список review для одного серіалу
-- `POST /api/entity3/_counts` — кількість review для списку серіалів
-- перевірка існування `Series` через Spring API
-- валідація через Zod
-- інтеграція reviews прямо у frontend блоку 3
-
-## REST API
-
-### Studios
-
-```http
-GET    /api/v1/studios
-POST   /api/v1/studios
-PUT    /api/v1/studios/{id}
-DELETE /api/v1/studios/{id}
-```
-
-Приклад `POST /api/v1/studios`:
-
-```json
-{
-  "name": "HBO",
-  "country": "USA"
-}
-```
-
-### Series
-
-```http
-GET    /api/v1/series
-GET    /api/v1/series/{id}
-GET    /api/v1/series/top?limit=5
-GET    /api/v1/series/search?query=game
-POST   /api/v1/series
-PUT    /api/v1/series/{id}
-DELETE /api/v1/series/{id}
-POST   /api/v1/series/_list
-POST   /api/v1/series/_report
-GET    /api/v1/series/_report/{jobId}
-POST   /api/v1/series/upload
-```
-
-Приклад `POST /api/v1/series`:
-
-```json
-{
-  "title": "Wednesday",
-  "genre": "Mystery, Drama",
-  "seasons": 2,
-  "rating": 8.1,
-  "year": 2022,
-  "finished": false,
-  "studioId": 2
-}
-```
-
-### Statistics
-
-```http
-GET /api/v1/statistics/{attribute}
-```
-
-Підтримувані атрибути:
-
-- `title`
-- `studio`
-- `genre`
-- `seasons`
-- `rating`
-- `year`
-- `finished`
-
-### Reviews service
+Основні endpoint-и:
 
 ```http
 GET  /health
@@ -239,89 +93,3 @@ POST /api/entity3
 GET  /api/entity3?entity1Id=1&size=5&from=0
 POST /api/entity3/_counts
 ```
-
-Приклад `POST /api/entity3`:
-
-```json
-{
-  "seriesId": 1,
-  "reviewerName": "Nastya",
-  "comment": "Strong atmosphere and good pacing.",
-  "rating": 9
-}
-```
-
-## База даних
-
-Через `docker-compose.yml` піднімаються:
-
-- PostgreSQL на `localhost:5433`
-- MongoDB на `localhost:27017`
-
-Liquibase використовує:
-
-- `src/main/resources/db/changelog/db.changelog-master.yaml`
-
-Основні таблиці:
-
-- `studios`
-- `series`
-
-## Конфігурація
-
-Spring читає `.env` з кореня проєкту.
-
-Ключові змінні:
-
-```env
-APP_PORT=9090
-DB_HOST=localhost
-DB_PORT=5433
-DB_NAME=series_db
-DB_USER=postgres
-DB_PASSWORD=
-DB_SEED=seed
-```
-
-Для `block4-reviews-service` локальний `.env` уже підготовлений під стандартний запуск.
-
-## Тести
-
-### Spring
-
-```powershell
-mvn test
-```
-
-### Reviews service
-
-```powershell
-cd block4-reviews-service
-npm test
-```
-
-## Швидка перевірка перед здачею
-
-1. Запусти `start-app.bat`
-2. Відкрий `http://localhost:9090/`
-3. Перевір пошук
-4. Створи новий серіал
-5. Обери від 1 до 3 жанрів
-6. Відкрий статистику
-7. Відкрий reviews для будь-якого серіалу
-8. Додай review
-9. За потреби відкрий `http://localhost:3010/health`
-
-## Для захисту
-
-Найзручніше показувати проєкт так:
-
-1. `Block 1` — коротко сказати, що є консольна логіка та обробка даних
-2. `Block 2` — показати REST API на `9090`
-3. `Block 3` — показати SPA frontend на `9090`
-4. `Block 4` — показати reviews у UI та health-check на `3010`
-
-## Додатково
-
-- Reviews service README: [block4-reviews-service/README.md](/d:/task_block1-main/task_block1-main/block4-reviews-service/README.md:1)
-- SPA frontend README: [block3-spa/README.md](/d:/task_block1-main/task_block1-main/block3-spa/README.md:1)

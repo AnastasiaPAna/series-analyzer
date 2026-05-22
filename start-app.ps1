@@ -1,14 +1,17 @@
 $ErrorActionPreference = "Stop"
 
 $projectRoot = Split-Path -Parent $MyInvocation.MyCommand.Path
-$spaRoot = Join-Path $projectRoot "block3-spa"
+$frontendRoot = Join-Path $projectRoot "series-frontend"
 $reviewsRoot = Join-Path $projectRoot "block4-reviews-service"
 $runtimeRoot = Join-Path $projectRoot ".runtime"
 $springJar = Join-Path $projectRoot "target\series-analyzer-1.0.0.jar"
+$frontendOut = Join-Path $runtimeRoot "frontend.out.log"
+$frontendErr = Join-Path $runtimeRoot "frontend.err.log"
 $springOut = Join-Path $runtimeRoot "spring.out.log"
 $springErr = Join-Path $runtimeRoot "spring.err.log"
 $reviewsOut = Join-Path $runtimeRoot "reviews.out.log"
 $reviewsErr = Join-Path $runtimeRoot "reviews.err.log"
+$frontendPidFile = Join-Path $runtimeRoot "frontend.pid"
 $springPidFile = Join-Path $runtimeRoot "spring.pid"
 $reviewsPidFile = Join-Path $runtimeRoot "reviews.pid"
 
@@ -125,12 +128,35 @@ function Ensure-Docker {
         return
     }
 
+    $dockerService = Get-Service -Name "com.docker.service" -ErrorAction SilentlyContinue
+    if ($dockerService -and $dockerService.Status -ne "Running") {
+        try {
+            Write-Host "Starting Docker service..."
+            Start-Service -Name "com.docker.service" -ErrorAction Stop
+            Start-Sleep -Seconds 5
+            if (Test-DockerReady -DockerPath $DockerPath) {
+                Write-Host "Docker service is ready."
+                return
+            }
+        } catch {
+            Write-Host "Docker service requires manual startup or administrator rights."
+        }
+    }
+
     $dockerDesktop = "C:\Program Files\Docker\Docker\Docker Desktop.exe"
     if (Test-Path $dockerDesktop) {
         Write-Host "Starting Docker Desktop..."
         Start-Process -FilePath $dockerDesktop | Out-Null
-        $deadline = (Get-Date).AddSeconds(120)
+        $deadline = (Get-Date).AddSeconds(240)
         while ((Get-Date) -lt $deadline) {
+            $service = Get-Service -Name "com.docker.service" -ErrorAction SilentlyContinue
+            if ($service -and $service.Status -ne "Running") {
+                try {
+                    Start-Service -Name "com.docker.service" -ErrorAction Stop
+                } catch {
+                    # ignore and keep waiting for Docker Desktop
+                }
+            }
             if (Test-DockerReady -DockerPath $DockerPath) {
                 Write-Host "Docker Desktop is ready."
                 return
@@ -145,8 +171,12 @@ function Ensure-Docker {
 function Test-DockerReady {
     param([string]$DockerPath)
 
-    & "C:\Windows\System32\cmd.exe" /c "`"$DockerPath`" info >nul 2>nul"
-    return $LASTEXITCODE -eq 0
+    try {
+        & $DockerPath info --format "{{.ServerVersion}}" | Out-Null
+        return $LASTEXITCODE -eq 0
+    } catch {
+        return $false
+    }
 }
 
 $docker = Resolve-Executable "docker.exe" @(
@@ -173,22 +203,20 @@ if ($LASTEXITCODE -ne 0) {
     throw "docker compose up -d failed."
 }
 
-if (Test-NeedsRebuild -OutputPath (Join-Path $projectRoot "src\main\resources\static\spa\index.html") -WatchPaths @(
-    (Join-Path $spaRoot "src"),
-    (Join-Path $spaRoot "scripts"),
-    (Join-Path $spaRoot "package.json")
-)) {
-    Write-Host "Building Block 3 SPA..."
-    & $node (Join-Path $spaRoot "scripts\build.mjs")
-    if ($LASTEXITCODE -ne 0) {
-        throw "Block 3 SPA build failed."
+if (-not (Test-Path (Join-Path $frontendRoot "node_modules"))) {
+    Write-Host "Installing frontend dependencies..."
+    Push-Location $frontendRoot
+    try {
+        & $npm install
+    } finally {
+        Pop-Location
     }
 }
 
 if (Test-NeedsRebuild -OutputPath $springJar -WatchPaths @(
     (Join-Path $projectRoot "src"),
     (Join-Path $projectRoot "pom.xml"),
-    (Join-Path $spaRoot "src")
+    (Join-Path $frontendRoot "src")
 )) {
     Write-Host "Building Spring application..."
     & $mvn -q -DskipTests package
@@ -196,7 +224,12 @@ if (Test-NeedsRebuild -OutputPath $springJar -WatchPaths @(
 
 if (-not (Test-Path (Join-Path $reviewsRoot "node_modules"))) {
     Write-Host "Installing Node dependencies..."
-    & $npm install
+    Push-Location $reviewsRoot
+    try {
+        & $npm install
+    } finally {
+        Pop-Location
+    }
 }
 
 if (Test-NeedsRebuild -OutputPath (Join-Path $reviewsRoot "dist\src\server.js") -WatchPaths @(
@@ -211,6 +244,19 @@ if (Test-NeedsRebuild -OutputPath (Join-Path $reviewsRoot "dist\src\server.js") 
     } finally {
         Pop-Location
     }
+}
+
+if (-not (Test-Http -Url "http://localhost:3000/series")) {
+    Write-Host "Starting Block 3 frontend on http://localhost:3000 ..."
+    Start-TrackedProcess `
+        -FilePath $npm `
+        -Arguments @("run", "dev") `
+        -WorkingDirectory $frontendRoot `
+        -OutFile $frontendOut `
+        -ErrFile $frontendErr `
+        -PidFile $frontendPidFile
+} else {
+    Write-Host "Block 3 frontend is already running."
 }
 
 if (-not (Test-Http -Url "http://localhost:9090/api/v1/studios")) {
@@ -239,13 +285,15 @@ if (-not (Test-Http -Url "http://localhost:3010/health")) {
     Write-Host "Reviews service is already running."
 }
 
+Wait-Http -Url "http://localhost:3000/series" -Name "Block 3 frontend"
 Wait-Http -Url "http://localhost:9090/api/v1/studios" -Name "Spring application"
 Wait-Http -Url "http://localhost:3010/health" -Name "Reviews service"
 
 Write-Host ""
 Write-Host "Open these URLs:"
-Write-Host "  http://localhost:9090/"
+Write-Host "  http://localhost:3000/"
+Write-Host "  http://localhost:3000/series"
 Write-Host "  http://localhost:9090/api/v1/studios"
 Write-Host "  http://localhost:3010/health"
 
-Start-Process "http://localhost:9090/" | Out-Null
+Start-Process "http://localhost:3000/" | Out-Null

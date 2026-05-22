@@ -9,6 +9,8 @@ import { errorMiddleware } from "./middleware/error.middleware";
 export function createApp(config: AppConfig) {
   const app = express();
   const allowedOrigins = new Set([
+    "http://localhost:3000",
+    "http://127.0.0.1:3000",
     "http://localhost:9090",
     "http://127.0.0.1:9090"
   ]);
