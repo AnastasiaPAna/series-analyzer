@@ -3,11 +3,14 @@
 import { useEffect, useState } from 'react';
 import { Alert, Card, CardContent, Chip, Container, Grid, Typography } from '@mui/material';
 import { useIntl } from 'react-intl';
+import { useLocationSearch } from '@/hooks/useLocationSearch';
 import { api } from '@/lib/api';
+import { localizeGenre, localizeSeriesTitle } from '@/lib/series-localization';
 import type { Series } from '@/types/series';
 
 export default function TopSeriesPage() {
   const intl = useIntl();
+  const search = useLocationSearch();
   const [items, setItems] = useState<Series[]>([]);
   const [error, setError] = useState('');
 
@@ -39,9 +42,11 @@ export default function TopSeriesPage() {
             <Card sx={{ height: '100%' }}>
               <CardContent>
                 <Chip label={`#${index + 1}`} color="warning" sx={{ mb: 2 }} />
-                <Typography variant="h5" fontWeight={700}>{series.title}</Typography>
+                <Typography variant="h5" fontWeight={700}>
+                  {localizeSeriesTitle(series.title, search.lang)}
+                </Typography>
                 <Typography color="text.secondary" sx={{ mb: 2 }}>
-                  {series.genre} • {series.year}
+                  {localizeGenre(series.genre, search.lang)} • {series.year}
                 </Typography>
                 <Typography>{intl.formatMessage({ id: 'series.rating' })}: <strong>{series.rating}</strong></Typography>
                 <Typography>{intl.formatMessage({ id: 'series.seasons' })}: <strong>{series.seasons}</strong></Typography>

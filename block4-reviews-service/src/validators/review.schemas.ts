@@ -33,6 +33,14 @@ export const reviewCountsSchema = z.object({
     .max(100, "entity1Ids must contain at most 100 ids")
 });
 
+export const recentReviewsQuerySchema = z.object({
+  size: z.coerce.number().int().positive().max(50).default(10)
+});
+
+export const updateReviewSchema = createReviewSchema;
+
 export type CreateReviewInput = z.infer<typeof createReviewSchema>;
 export type ReviewListQuery = z.infer<typeof reviewListQuerySchema>;
 export type ReviewCountsInput = z.infer<typeof reviewCountsSchema>;
+export type RecentReviewsQuery = z.infer<typeof recentReviewsQuerySchema>;
+export type UpdateReviewInput = z.infer<typeof updateReviewSchema>;

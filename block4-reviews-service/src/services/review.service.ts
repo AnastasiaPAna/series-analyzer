@@ -1,10 +1,12 @@
-import { Model } from "mongoose";
+import { isValidObjectId, Model } from "mongoose";
 import { AppError } from "../types/app-error";
 import { ReviewDocument } from "../models/review.model";
 import {
   CreateReviewInput,
+  RecentReviewsQuery,
   ReviewCountsInput,
-  ReviewListQuery
+  ReviewListQuery,
+  UpdateReviewInput
 } from "../validators/review.schemas";
 import { Entity1ClientService } from "./entity1-client.service";
 
@@ -61,6 +63,54 @@ export class ReviewService {
       accumulator[String(id)] = match?.total ?? 0;
       return accumulator;
     }, {});
+  }
+
+  async recent(query: RecentReviewsQuery) {
+    const reviews = await this.reviewModel
+      .find({})
+      .sort({ publishedAt: -1, _id: -1 })
+      .limit(query.size)
+      .lean();
+
+    return reviews.map((review) => this.toResponse(review));
+  }
+
+  async delete(reviewId: string) {
+    if (!isValidObjectId(reviewId)) {
+      throw new AppError("Review id is invalid", 400);
+    }
+
+    const deleted = await this.reviewModel.findByIdAndDelete(reviewId).lean();
+
+    if (!deleted) {
+      throw new AppError(`Review with id ${reviewId} was not found`, 404);
+    }
+  }
+
+  async update(reviewId: string, input: UpdateReviewInput) {
+    if (!isValidObjectId(reviewId)) {
+      throw new AppError("Review id is invalid", 400);
+    }
+
+    await this.entity1ClientService.ensureSeriesExists(input.seriesId);
+
+    const updated = await this.reviewModel.findByIdAndUpdate(
+      reviewId,
+      {
+        ...input,
+        publishedAt: input.publishedAt ?? new Date()
+      },
+      {
+        new: true,
+        runValidators: true
+      }
+    ).lean();
+
+    if (!updated) {
+      throw new AppError(`Review with id ${reviewId} was not found`, 404);
+    }
+
+    return this.toResponse(updated);
   }
 
   private toResponse(review: ReviewDocument | Record<string, unknown>) {

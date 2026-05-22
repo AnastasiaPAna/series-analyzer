@@ -24,49 +24,19 @@
 - `data/` — JSON-дані для імпорту
 - `postman/` — Postman collection
 
-## Швидкий запуск
+## Запуск
 
 Передумови:
 
-- Java 21
-- Node.js
 - Docker Desktop
 
-### Актуальна гілка для Block 3
-
-Для актуальної версії `Block 3` використовуй гілку `block3-fix`.
-
-Запуск на чистій машині:
+Актуальна гілка для `Block 3`:
 
 ```powershell
 git clone https://github.com/AnastasiaPAna/series-analyzer.git
 cd series-analyzer
 git checkout block3-fix
 ```
-
-### Запуск через Docker
-
-Якщо не хочеш встановлювати Java і Node.js на комп'ютер, можна підняти весь стек через Docker:
-
-```powershell
-.\start-app-docker.ps1
-```
-
-Цей сценарій піднімає:
-
-- PostgreSQL
-- MongoDB
-- Spring backend
-- reviews-service
-- frontend Block 3
-
-Зупинка:
-
-```powershell
-.\stop-app-docker.ps1
-```
-
-### Локальний запуск
 
 Запуск з кореня проєкту:
 
@@ -78,12 +48,13 @@ git checkout block3-fix
 
 - `start-app.bat`
 
-Скрипт:
+Цей сценарій піднімає:
 
-- піднімає PostgreSQL і MongoDB через Docker
-- запускає frontend Block 3 на `3000`
-- запускає Spring backend на `9090`
-- запускає reviews-service на `3010`
+- PostgreSQL
+- MongoDB
+- Spring backend
+- reviews-service
+- frontend Block 3
 
 Зупинка:
 

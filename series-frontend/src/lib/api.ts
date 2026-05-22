@@ -94,6 +94,11 @@ export const api = {
     method: 'POST',
     body: JSON.stringify(body),
   }),
+  deleteReview: (id: string) => reviewsRequest<void>(`/api/entity3/${id}`, {
+    method: 'DELETE',
+  }),
+  listRecentReviews: (size = 5) =>
+    reviewsRequest<Review[]>(`/api/entity3/recent?size=${size}`),
   reviewCounts: (seriesIds: number[]) => reviewsRequest<Record<string, number>>('/api/entity3/_counts', {
     method: 'POST',
     body: JSON.stringify({ entity1Ids: seriesIds }),

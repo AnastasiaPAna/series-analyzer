@@ -29,8 +29,10 @@ import { useIntl } from 'react-intl';
 import SeriesFilters from '@/components/SeriesFilters';
 import { SERIES_NEW, seriesDetails } from '@/constants/pages';
 import { useChangePage } from '@/hooks/useChangePage';
+import { useAdminMode } from '@/hooks/useAdminMode';
 import { useLocationSearch } from '@/hooks/useLocationSearch';
 import { api } from '@/lib/api';
+import { localizeGenre, localizeSeriesTitle } from '@/lib/series-localization';
 import type { Series, Studio } from '@/types/series';
 
 export default function SeriesListPage() {
@@ -38,9 +40,11 @@ export default function SeriesListPage() {
   const search = useLocationSearch();
   const searchParams = useSearchParams();
   const changePage = useChangePage();
+  const { isAdmin } = useAdminMode();
   const [items, setItems] = useState<Series[]>([]);
   const [studios, setStudios] = useState<Studio[]>([]);
   const [totalPages, setTotalPages] = useState(1);
+  const [reviewCounts, setReviewCounts] = useState<Record<string, number>>({});
   const [error, setError] = useState('');
   const [snackbar, setSnackbar] = useState('');
   const [deleteTarget, setDeleteTarget] = useState<Series | null>(null);
@@ -85,6 +89,12 @@ export default function SeriesListPage() {
       setItems(seriesResult.list);
       setTotalPages(Math.max(seriesResult.totalPages || 1, 1));
       setStudios(studioResult);
+      if (seriesResult.list.length) {
+        const counts = await api.reviewCounts(seriesResult.list.map((item) => item.id));
+        setReviewCounts(counts);
+      } else {
+        setReviewCounts({});
+      }
     } catch (e) {
       setError(e instanceof Error ? e.message : intl.formatMessage({ id: 'series.load.error' }));
     }
@@ -117,9 +127,11 @@ export default function SeriesListPage() {
     <Container maxWidth="lg" sx={{ py: 4 }}>
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
         <Typography variant="h4" fontWeight={700}>{intl.formatMessage({ id: 'series.list.title' })}</Typography>
-        <Button component={Link} href={`${SERIES_NEW}?${new URLSearchParams(paramsAsStrings).toString()}`} variant="contained">
-          {intl.formatMessage({ id: 'series.add' })}
-        </Button>
+        {isAdmin && (
+          <Button component={Link} href={`${SERIES_NEW}?${new URLSearchParams(paramsAsStrings).toString()}`} variant="contained">
+            {intl.formatMessage({ id: 'series.add' })}
+          </Button>
+        )}
       </Box>
 
       <SeriesFilters
@@ -140,26 +152,33 @@ export default function SeriesListPage() {
               <TableCell>{intl.formatMessage({ id: 'series.rating' })}</TableCell>
               <TableCell>{intl.formatMessage({ id: 'series.year' })}</TableCell>
               <TableCell>{intl.formatMessage({ id: 'series.studio' })}</TableCell>
-              <TableCell align="right" />
+              <TableCell>{intl.formatMessage({ id: 'series.reviews' })}</TableCell>
+              {isAdmin && <TableCell align="right" />}
             </TableRow>
           </TableHead>
           <TableBody>
             {items.map((series) => (
-              <TableRow key={series.id} hover sx={{ '& .delete-action': { opacity: 0 }, '&:hover .delete-action': { opacity: 1 } }}>
+              <TableRow key={series.id} hover sx={isAdmin ? { '& .delete-action': { opacity: 0 }, '&:hover .delete-action': { opacity: 1 } } : undefined}>
                 <TableCell>
-                  <Link href={`${seriesDetails(series.id)}?${new URLSearchParams(paramsAsStrings).toString()}`} style={{ color: 'inherit', textDecoration: 'none', fontWeight: 600 }}>
-                    {series.title}
+                  <Link
+                    href={`${seriesDetails(series.id)}?${new URLSearchParams(paramsAsStrings).toString()}`}
+                    style={{ color: 'inherit', textDecoration: 'none', fontWeight: 600 }}
+                  >
+                    {localizeSeriesTitle(series.title, search.lang)}
                   </Link>
                 </TableCell>
-                <TableCell>{series.genre}</TableCell>
+                <TableCell>{localizeGenre(series.genre, search.lang)}</TableCell>
                 <TableCell>{series.rating}</TableCell>
                 <TableCell>{series.year}</TableCell>
                 <TableCell>{series.studio?.name || '-'}</TableCell>
-                <TableCell align="right">
-                  <IconButton className="delete-action" color="error" onClick={() => setDeleteTarget(series)}>
-                    <DeleteIcon />
-                  </IconButton>
-                </TableCell>
+                <TableCell>{reviewCounts[String(series.id)] ?? 0}</TableCell>
+                {isAdmin && (
+                  <TableCell align="right">
+                    <IconButton className="delete-action" color="error" onClick={() => setDeleteTarget(series)}>
+                      <DeleteIcon />
+                    </IconButton>
+                  </TableCell>
+                )}
               </TableRow>
             ))}
           </TableBody>

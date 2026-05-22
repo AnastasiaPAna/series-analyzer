@@ -5,27 +5,33 @@ import { useEffect, useMemo, useState } from 'react';
 import { Alert, Box, Button, Card, CardContent, Container, Grid, Stack, Typography } from '@mui/material';
 import { useIntl } from 'react-intl';
 import { SERIES_LIST, SERIES_NEW, STATISTICS_PAGE, TOP_PAGE } from '@/constants/pages';
+import { useAdminMode } from '@/hooks/useAdminMode';
 import { useLocationSearch } from '@/hooks/useLocationSearch';
 import { api } from '@/lib/api';
-import type { Series, Studio } from '@/types/series';
+import { localizeGenre, localizeSeriesTitle } from '@/lib/series-localization';
+import type { Review, Series, Studio } from '@/types/series';
 
 export default function HomePage() {
   const intl = useIntl();
   const search = useLocationSearch();
+  const { isAdmin } = useAdminMode();
   const [series, setSeries] = useState<Series[]>([]);
   const [studios, setStudios] = useState<Studio[]>([]);
+  const [recentReviews, setRecentReviews] = useState<Review[]>([]);
   const [error, setError] = useState('');
 
   useEffect(() => {
     const load = async () => {
       try {
         setError('');
-        const [seriesResult, studiosResult] = await Promise.all([
+        const [seriesResult, studiosResult, reviewsResult] = await Promise.all([
           api.getAllSeries(),
           api.listStudios(),
+          api.listRecentReviews(3),
         ]);
         setSeries(seriesResult);
         setStudios(studiosResult);
+        setRecentReviews(reviewsResult);
       } catch (e) {
         setError(e instanceof Error ? e.message : intl.formatMessage({ id: 'series.load.error' }));
       }
@@ -49,6 +55,10 @@ export default function HomePage() {
 
   const topThree = [...series].sort((a, b) => b.rating - a.rating).slice(0, 3);
   const withLang = (path: string) => `${path}?lang=${search.lang}`;
+  const seriesTitles = useMemo(
+    () => Object.fromEntries(series.map((item) => [item.id, localizeSeriesTitle(item.title, search.lang)])),
+    [search.lang, series]
+  );
 
   return (
     <Container maxWidth="lg" sx={{ py: 5 }}>
@@ -72,9 +82,11 @@ export default function HomePage() {
                 <Button component={Link} href={withLang(STATISTICS_PAGE)} variant="outlined" sx={{ color: '#fff', borderColor: 'rgba(255,255,255,0.45)' }}>
                   {intl.formatMessage({ id: 'home.statistics' })}
                 </Button>
-                <Button component={Link} href={withLang(SERIES_NEW)} variant="outlined" sx={{ color: '#fff', borderColor: 'rgba(255,255,255,0.45)' }}>
-                  {intl.formatMessage({ id: 'home.create' })}
-                </Button>
+                {isAdmin && (
+                  <Button component={Link} href={withLang(SERIES_NEW)} variant="outlined" sx={{ color: '#fff', borderColor: 'rgba(255,255,255,0.45)' }}>
+                    {intl.formatMessage({ id: 'home.create' })}
+                  </Button>
+                )}
               </Stack>
             </CardContent>
           </Card>
@@ -119,9 +131,9 @@ export default function HomePage() {
               <Stack spacing={1.5}>
                 {topThree.map((item, index) => (
                   <Box key={item.id} sx={{ p: 1.5, borderRadius: 2, bgcolor: 'grey.100' }}>
-                    <Typography fontWeight={700}>{index + 1}. {item.title}</Typography>
+                    <Typography fontWeight={700}>{index + 1}. {localizeSeriesTitle(item.title, search.lang)}</Typography>
                     <Typography variant="body2" color="text.secondary">
-                      {item.genre} • {item.rating}
+                      {localizeGenre(item.genre, search.lang)} • {item.rating}
                     </Typography>
                   </Box>
                 ))}
@@ -133,6 +145,41 @@ export default function HomePage() {
           </Card>
         </Grid>
       </Grid>
+
+      <Card sx={{ mt: 3 }}>
+        <CardContent>
+          <Typography variant="h5" fontWeight={700} sx={{ mb: 2 }}>
+            {intl.formatMessage({ id: 'home.reviewsTitle' })}
+          </Typography>
+          <Stack spacing={1.5}>
+            {recentReviews.length ? recentReviews.map((review) => (
+              <Box key={`${review.id || review.publishedAt}-${review.reviewerName}`} sx={{ p: 1.5, borderRadius: 2, bgcolor: 'grey.100' }}>
+                <Typography fontWeight={700}>
+                  {review.reviewerName} — {intl.formatMessage({ id: 'home.reviewsSeriesLabel' })}:{' '}
+                  {seriesTitles[review.seriesId] || `#${review.seriesId}`}
+                </Typography>
+                <Typography variant="body2" color="text.secondary" sx={{ mb: 0.5 }}>
+                  {new Date(review.publishedAt).toLocaleDateString('uk-UA')} • {review.rating.toFixed(1)}/10
+                </Typography>
+                <Typography sx={{ mb: 1 }}>{review.comment}</Typography>
+                <Button
+                  component={Link}
+                  href={`/series/${review.seriesId}?lang=${search.lang}`}
+                  size="small"
+                  variant="text"
+                  sx={{ px: 0 }}
+                >
+                  {intl.formatMessage({ id: 'home.openReviewSeries' })}
+                </Button>
+              </Box>
+            )) : (
+              <Typography color="text.secondary">
+                {intl.formatMessage({ id: 'home.reviewsEmpty' })}
+              </Typography>
+            )}
+          </Stack>
+        </CardContent>
+      </Card>
     </Container>
   );
 }

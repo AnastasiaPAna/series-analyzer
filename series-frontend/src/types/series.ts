@@ -16,7 +16,7 @@ export type Series = {
 };
 
 export type Review = {
-  _id?: string;
+  id?: string;
   seriesId: number;
   reviewerName: string;
   comment: string;
