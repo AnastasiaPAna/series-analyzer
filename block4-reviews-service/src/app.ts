@@ -44,6 +44,8 @@ export function createApp(config: AppConfig) {
   app.use((request, response, next) => {
     const origin = request.headers.origin;
 
+    // The frontend talks to this service from another port, so we allow only
+    // the local entry points we actually use during development.
     if (origin && allowedOrigins.has(origin)) {
       response.header("Access-Control-Allow-Origin", origin);
       response.header("Vary", "Origin");
@@ -138,6 +140,8 @@ export function createApp(config: AppConfig) {
           };
 
       if (!isAdmin) {
+        // This page is not meant to be a public moderation URL. The intended
+        // path is: sign in as admin in the frontend, then land here.
         response
           .status(403)
           .type("html")
@@ -201,6 +205,8 @@ export function createApp(config: AppConfig) {
       const seriesIds = [...new Set(reviews.map((review) => review.seriesId))];
       const seriesTitles = new Map<number, string>();
 
+      // Reviews only store the related series id, so we resolve human-readable
+      // titles here before rendering the moderation screen.
       await Promise.all(seriesIds.map(async (seriesId) => {
         try {
           const series = await entity1ClientService.getSeries(seriesId);

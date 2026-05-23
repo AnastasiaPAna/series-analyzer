@@ -11,6 +11,8 @@ export const ADMIN_PASSWORD = 'admin123';
 export const ADMIN_ACCESS_TOKEN = 'series-admin-access';
 
 export function getAdminReviewsServiceUrl(language: Language) {
+  // Moderation happens in the reviews service itself, so from the frontend
+  // we only need to build the link that opens that screen with admin access.
   const params = new URLSearchParams({
     lang: language,
     admin: ADMIN_LOGIN,
@@ -34,6 +36,8 @@ export function useAdminMode() {
   }, []);
 
   const login = (username: string) => {
+    // This is intentionally lightweight: we only need to unlock admin tools
+    // in the demo UI, not run a full authentication flow.
     window.localStorage.setItem(ADMIN_MODE_KEY, 'true');
     window.localStorage.setItem(ADMIN_USER_KEY, username);
     setIsAdmin(true);

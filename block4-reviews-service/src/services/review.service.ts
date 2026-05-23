@@ -21,6 +21,8 @@ export class ReviewService {
 
     const review = await this.reviewModel.create({
       ...input,
+      // If the client does not send a publish time, we stamp it here so the
+      // list still has a stable timeline.
       publishedAt: input.publishedAt ?? new Date()
     });
 
@@ -41,6 +43,8 @@ export class ReviewService {
   async counts(input: ReviewCountsInput) {
     const uniqueIds = [...new Set(input.entity1Ids)];
 
+    // This is exactly the kind of work Mongo should do for us. Loading every
+    // review into memory just to count them would be wasteful.
     const counters = await this.reviewModel.aggregate<{
       _id: number;
       total: number;
@@ -124,6 +128,8 @@ export class ReviewService {
       throw new AppError("Review response is missing publishedAt", 500);
     }
 
+    // Some callers use lean objects, others use mongoose documents. Routing
+    // both through one mapper keeps the API response shape consistent.
     return {
       id: source._id?.toString?.() ?? "",
       seriesId: source.seriesId,

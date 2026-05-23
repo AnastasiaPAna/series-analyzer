@@ -28,6 +28,8 @@ export default function AllReviewsPage() {
 
   useEffect(() => {
     if (isAdmin && typeof window !== 'undefined') {
+      // This page is really just a guarded entry point. The actual reviews
+      // moderation screen lives in the standalone Node service on port 3010.
       window.location.replace(getAdminReviewsServiceUrl(search.lang));
     }
   }, [isAdmin, search.lang]);

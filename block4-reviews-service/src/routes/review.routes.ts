@@ -13,6 +13,8 @@ export function createReviewRouter(reviewService: ReviewService, adminAccessToke
   const router = Router();
 
   const ensureAdmin = (request: Request) => {
+    // Reading reviews stays public, but edit/delete should only work after the
+    // admin flow from the frontend passes the shared access token.
     if (request.header("x-admin-token") !== adminAccessToken) {
       throw new AppError("Admin access token is invalid", 403);
     }
@@ -75,6 +77,8 @@ export function createReviewRouter(reviewService: ReviewService, adminAccessToke
     async (request: Request, response: Response, next: NextFunction) => {
       try {
         ensureAdmin(request);
+        // In practice this is a string, but normalizing it here keeps the
+        // service layer away from request-shape details.
         const reviewId = Array.isArray(request.params.id)
           ? request.params.id[0]
           : request.params.id;
@@ -91,6 +95,8 @@ export function createReviewRouter(reviewService: ReviewService, adminAccessToke
     async (request: Request, response: Response, next: NextFunction) => {
       try {
         ensureAdmin(request);
+        // Same idea as in delete: by the time we call the service, we want one
+        // plain review id and nothing transport-specific.
         const reviewId = Array.isArray(request.params.id)
           ? request.params.id[0]
           : request.params.id;

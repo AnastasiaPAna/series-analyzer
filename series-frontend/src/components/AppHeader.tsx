@@ -117,6 +117,8 @@ export default function AppHeader() {
             {text.statistics}
           </Button>
           {isAdmin && (
+            // Reviews moderation was kept in the Node service, so this link
+            // jumps there instead of opening another page inside Next.js.
             <Button component="a" href={getAdminReviewsServiceUrl(search.lang)} variant="text">
               {text.reviews}
             </Button>
