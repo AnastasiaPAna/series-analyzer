@@ -11,7 +11,6 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
-  Rating,
   Stack,
   TextField,
   Typography
@@ -26,6 +25,12 @@ const emptyForm = {
   rating: 5,
 };
 
+type ReviewFormErrors = {
+  reviewerName?: string;
+  comment?: string;
+  rating?: string;
+};
+
 export default function SeriesReviewsPanel({ series }: { series: Series }) {
   const intl = useIntl();
   const [reviews, setReviews] = useState<Review[]>([]);
@@ -34,6 +39,7 @@ export default function SeriesReviewsPanel({ series }: { series: Series }) {
   const [loadingMore, setLoadingMore] = useState(false);
   const [form, setForm] = useState(emptyForm);
   const [formError, setFormError] = useState('');
+  const [fieldErrors, setFieldErrors] = useState<ReviewFormErrors>({});
 
   const load = async (from = 0, append = false) => {
     try {
@@ -56,10 +62,33 @@ export default function SeriesReviewsPanel({ series }: { series: Series }) {
     return (reviews.reduce((sum, review) => sum + review.rating, 0) / reviews.length).toFixed(1);
   }, [reviews]);
 
+  const validateForm = () => {
+    const nextErrors: ReviewFormErrors = {};
+
+    if (form.reviewerName.trim().length < 2) {
+      nextErrors.reviewerName = intl.formatMessage({ id: 'reviews.validation.reviewer' });
+    }
+
+    if (form.comment.trim().length < 10) {
+      nextErrors.comment = intl.formatMessage({ id: 'reviews.validation.comment' });
+    }
+
+    if (!Number.isFinite(form.rating) || form.rating < 1 || form.rating > 10) {
+      nextErrors.rating = intl.formatMessage({ id: 'reviews.validation.rating' });
+    }
+
+    setFieldErrors(nextErrors);
+    return Object.keys(nextErrors).length === 0;
+  };
+
   const submit = async (event: FormEvent) => {
     event.preventDefault();
+    if (!validateForm()) {
+      return;
+    }
     try {
       setFormError('');
+      setFieldErrors({});
       const payload: ReviewRequest = {
         seriesId: series.id,
         reviewerName: form.reviewerName.trim(),
@@ -69,6 +98,7 @@ export default function SeriesReviewsPanel({ series }: { series: Series }) {
       await api.createReview(payload);
       setOpen(false);
       setForm(emptyForm);
+      setFieldErrors({});
       await load();
     } catch (e) {
       setFormError(e instanceof Error ? e.message : intl.formatMessage({ id: 'reviews.saveError' }));
@@ -103,15 +133,19 @@ export default function SeriesReviewsPanel({ series }: { series: Series }) {
 
         <Stack spacing={2}>
           {reviews.map((review) => (
-            <Card key={`${review._id || review.publishedAt}-${review.reviewerName}`} variant="outlined">
+            <Card key={`${review.id || review.publishedAt}-${review.reviewerName}`} variant="outlined">
               <CardContent>
                 <Box sx={{ display: 'flex', justifyContent: 'space-between', gap: 2, flexWrap: 'wrap', mb: 1 }}>
-                  <Typography fontWeight={700}>{review.reviewerName}</Typography>
+                  <Box>
+                    <Typography fontWeight={700}>{review.reviewerName}</Typography>
+                    <Typography color="primary.main" fontWeight={700}>
+                      {review.rating}/10
+                    </Typography>
+                  </Box>
                   <Typography color="text.secondary">
                     {new Date(review.publishedAt).toLocaleDateString()}
                   </Typography>
                 </Box>
-                <Rating value={review.rating / 2} precision={0.5} readOnly sx={{ mb: 1 }} />
                 <Typography>{review.comment}</Typography>
               </CardContent>
             </Card>
@@ -139,15 +173,29 @@ export default function SeriesReviewsPanel({ series }: { series: Series }) {
               <TextField
                 label={intl.formatMessage({ id: 'reviews.reviewer' })}
                 value={form.reviewerName}
-                onChange={(event) => setForm({ ...form, reviewerName: event.target.value })}
+                onChange={(event) => {
+                  setForm({ ...form, reviewerName: event.target.value });
+                  if (fieldErrors.reviewerName) {
+                    setFieldErrors((current) => ({ ...current, reviewerName: undefined }));
+                  }
+                }}
+                error={!!fieldErrors.reviewerName}
+                helperText={fieldErrors.reviewerName}
                 required
               />
               <TextField
                 label={intl.formatMessage({ id: 'reviews.comment' })}
                 value={form.comment}
-                onChange={(event) => setForm({ ...form, comment: event.target.value })}
+                onChange={(event) => {
+                  setForm({ ...form, comment: event.target.value });
+                  if (fieldErrors.comment) {
+                    setFieldErrors((current) => ({ ...current, comment: undefined }));
+                  }
+                }}
                 multiline
                 minRows={4}
+                error={!!fieldErrors.comment}
+                helperText={fieldErrors.comment}
                 required
               />
               <TextField
@@ -155,7 +203,14 @@ export default function SeriesReviewsPanel({ series }: { series: Series }) {
                 label={intl.formatMessage({ id: 'reviews.rating' })}
                 value={form.rating}
                 inputProps={{ min: 1, max: 10, step: 0.1 }}
-                onChange={(event) => setForm({ ...form, rating: Number(event.target.value) })}
+                onChange={(event) => {
+                  setForm({ ...form, rating: Number(event.target.value) });
+                  if (fieldErrors.rating) {
+                    setFieldErrors((current) => ({ ...current, rating: undefined }));
+                  }
+                }}
+                error={!!fieldErrors.rating}
+                helperText={fieldErrors.rating}
                 required
               />
               {formError && <Alert severity="error">{formError}</Alert>}
@@ -163,7 +218,12 @@ export default function SeriesReviewsPanel({ series }: { series: Series }) {
           </Box>
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setOpen(false)}>{intl.formatMessage({ id: 'series.cancel' })}</Button>
+          <Button onClick={() => {
+            setOpen(false);
+            setFormError('');
+            setFieldErrors({});
+            setForm(emptyForm);
+          }}>{intl.formatMessage({ id: 'series.cancel' })}</Button>
           <Button type="submit" form="review-form" variant="contained">{intl.formatMessage({ id: 'reviews.save' })}</Button>
         </DialogActions>
       </Dialog>

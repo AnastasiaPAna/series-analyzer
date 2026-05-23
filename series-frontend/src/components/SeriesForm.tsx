@@ -3,6 +3,8 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Alert, Box, Button, Card, CardContent, Checkbox, FormControlLabel, Grid, MenuItem, TextField } from '@mui/material';
 import { useIntl } from 'react-intl';
+import { useLocationSearch } from '@/hooks/useLocationSearch';
+import { localizeGenre, localizeSeriesTitle } from '@/lib/series-localization';
 import type { Series, SeriesRequest, Studio } from '@/types/series';
 
 type Errors = Partial<Record<keyof SeriesRequest, string>>;
@@ -25,6 +27,7 @@ export default function SeriesForm({ series, studios, mode, onSubmit, onCancel }
   onCancel: () => void;
 }) {
   const intl = useIntl();
+  const search = useLocationSearch();
   const initial = useMemo<SeriesRequest>(() => series ? {
     title: series.title,
     genre: series.genre,
@@ -39,6 +42,8 @@ export default function SeriesForm({ series, studios, mode, onSubmit, onCancel }
   const [errors, setErrors] = useState<Errors>({});
   const [serverError, setServerError] = useState('');
   const readonly = mode === 'view';
+  const displayTitle = readonly ? localizeSeriesTitle(form.title, search.lang) : form.title;
+  const displayGenre = readonly ? localizeGenre(form.genre, search.lang) : form.genre;
 
   useEffect(() => {
     setForm(initial);
@@ -80,8 +85,8 @@ export default function SeriesForm({ series, studios, mode, onSubmit, onCancel }
       <CardContent>
         {serverError && <Alert severity="error" sx={{ mb: 2 }}>{serverError}</Alert>}
         <Grid container spacing={2}>
-          <Grid size={{ xs: 12, sm: 6 }}><TextField fullWidth disabled={readonly} label={intl.formatMessage({ id: 'series.title' })} value={form.title} error={!!errors.title} helperText={errors.title} onChange={(e) => setForm({ ...form, title: e.target.value })} /></Grid>
-          <Grid size={{ xs: 12, sm: 6 }}><TextField fullWidth disabled={readonly} label={intl.formatMessage({ id: 'series.genre' })} value={form.genre} error={!!errors.genre} helperText={errors.genre} onChange={(e) => setForm({ ...form, genre: e.target.value })} /></Grid>
+          <Grid size={{ xs: 12, sm: 6 }}><TextField fullWidth disabled={readonly} label={intl.formatMessage({ id: 'series.title' })} value={displayTitle} error={!!errors.title} helperText={errors.title} onChange={(e) => setForm({ ...form, title: e.target.value })} /></Grid>
+          <Grid size={{ xs: 12, sm: 6 }}><TextField fullWidth disabled={readonly} label={intl.formatMessage({ id: 'series.genre' })} value={displayGenre} error={!!errors.genre} helperText={errors.genre} onChange={(e) => setForm({ ...form, genre: e.target.value })} /></Grid>
           <Grid size={{ xs: 12, sm: 3 }}><TextField fullWidth disabled={readonly} type="number" label={intl.formatMessage({ id: 'series.seasons' })} value={form.seasons} error={!!errors.seasons} helperText={errors.seasons} onChange={(e) => setForm({ ...form, seasons: Number(e.target.value) })} /></Grid>
           <Grid size={{ xs: 12, sm: 3 }}><TextField fullWidth disabled={readonly} type="number" inputProps={{ step: 0.1 }} label={intl.formatMessage({ id: 'series.rating' })} value={form.rating} error={!!errors.rating} helperText={errors.rating} onChange={(e) => setForm({ ...form, rating: Number(e.target.value) })} /></Grid>
           <Grid size={{ xs: 12, sm: 3 }}><TextField fullWidth disabled={readonly} type="number" label={intl.formatMessage({ id: 'series.year' })} value={form.year} error={!!errors.year} helperText={errors.year} onChange={(e) => setForm({ ...form, year: Number(e.target.value) })} /></Grid>

@@ -41,7 +41,8 @@ describe("Reviews API integration", () => {
       port: 0,
       mongodbUri: mongoServer.getUri(),
       entity1ServiceUrl: `http://127.0.0.1:${sourcePort}`,
-      requestTimeoutMs: 2000
+      requestTimeoutMs: 2000,
+      adminAccessToken: "series-admin-access"
     };
 
     await connectToDatabase(appConfig.mongodbUri);
@@ -179,5 +180,56 @@ describe("Reviews API integration", () => {
       "2": 1,
       "3": 0
     });
+  });
+
+  it("GET /api/entity3/recent returns the latest reviews across all series", async () => {
+    await ReviewModel.create([
+      {
+        seriesId: 1,
+        reviewerName: "Anna",
+        comment: "Older review for the first series item.",
+        rating: 8,
+        publishedAt: new Date("2024-01-10T10:00:00.000Z")
+      },
+      {
+        seriesId: 2,
+        reviewerName: "Kate",
+        comment: "Newest review that should be listed first.",
+        rating: 9,
+        publishedAt: new Date("2024-02-10T10:00:00.000Z")
+      }
+    ]);
+
+    const app = createApp(appConfig);
+
+    const response = await request(app)
+      .get("/api/entity3/recent")
+      .query({ size: 5 });
+
+    expect(response.status).toBe(200);
+    expect(response.body).toHaveLength(2);
+    expect(response.body[0].reviewerName).toBe("Kate");
+    expect(response.body[1].reviewerName).toBe("Anna");
+  });
+
+  it("DELETE /api/entity3/:id removes an existing review", async () => {
+    const created = await ReviewModel.create({
+      seriesId: 1,
+      reviewerName: "Anna",
+      comment: "Review that should be removable by admin tools.",
+      rating: 8,
+      publishedAt: new Date("2024-01-10T10:00:00.000Z")
+    });
+
+    const app = createApp(appConfig);
+
+    const response = await request(app)
+      .delete(`/api/entity3/${String(created._id)}`)
+      .set("X-Admin-Token", appConfig.adminAccessToken);
+
+    expect(response.status).toBe(204);
+
+    const stillExists = await ReviewModel.findById(created._id);
+    expect(stillExists).toBeNull();
   });
 });
