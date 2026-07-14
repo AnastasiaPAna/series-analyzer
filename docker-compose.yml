@@ -7,8 +7,6 @@ services:
       POSTGRES_DB: series_db
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
-    ports:
-      - "5433:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
@@ -21,8 +19,6 @@ services:
     image: mongo:7
     container_name: series-analyzer-mongo
     restart: unless-stopped
-    ports:
-      - "27017:27017"
     volumes:
       - mongo_data:/data/db
     healthcheck:
@@ -30,6 +26,57 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+
+  rabbitmq:
+    image: rabbitmq:3.13-management
+    container_name: series-analyzer-rabbitmq
+    restart: unless-stopped
+    ports:
+      # Keep the management UI reachable, but avoid the default port that is often already taken.
+      - "15673:15672"
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.13.4
+    container_name: series-analyzer-elasticsearch
+    restart: unless-stopped
+    environment:
+      discovery.type: single-node
+      xpack.security.enabled: "false"
+      ES_JAVA_OPTS: "-Xms512m -Xmx512m"
+    volumes:
+      - elasticsearch_data:/usr/share/elasticsearch/data
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fsS http://localhost:9200 >/dev/null || exit 1"]
+      interval: 15s
+      timeout: 10s
+      retries: 20
+      start_period: 20s
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:8.13.4
+    container_name: series-analyzer-kibana
+    restart: unless-stopped
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+    environment:
+      ELASTICSEARCH_HOSTS: http://elasticsearch:9200
+    ports:
+      # Expose Kibana on a safer host port to avoid local collisions.
+      - "5602:5601"
+
+  mailpit:
+    image: axllent/mailpit:v1.20
+    container_name: series-analyzer-mailpit
+    restart: unless-stopped
+    ports:
+      # Keep SMTP internal-only and expose the web UI on a less collision-prone port.
+      - "8026:8025"
 
   spring-app:
     build:
@@ -43,8 +90,18 @@ services:
       DB_NAME: series_db
       DB_USER: postgres
       DB_PASSWORD: postgres
+      RABBITMQ_HOST: rabbitmq
+      RABBITMQ_PORT: 5672
+      RABBITMQ_USERNAME: ${RABBITMQ_USERNAME:-guest}
+      RABBITMQ_PASSWORD: ${RABBITMQ_PASSWORD:-guest}
+      NOTIFICATION_ADMIN_EMAIL: ${NOTIFICATION_ADMIN_EMAIL:-admin@series.local}
+      EMAIL_NOTIFICATION_QUEUE: ${EMAIL_NOTIFICATION_QUEUE:-series-email.notifications}
+      EMAIL_NOTIFICATION_EXCHANGE: ${EMAIL_NOTIFICATION_EXCHANGE:-series.notifications}
+      EMAIL_NOTIFICATION_ROUTING_KEY: ${EMAIL_NOTIFICATION_ROUTING_KEY:-email.notification}
     depends_on:
       postgres:
+        condition: service_healthy
+      rabbitmq:
         condition: service_healthy
     ports:
       - "9090:9090"
@@ -68,6 +125,40 @@ services:
     ports:
       - "3010:3010"
 
+  email-service:
+    build:
+      context: ./block5-email-service
+      dockerfile: Dockerfile
+    container_name: series-analyzer-email
+    restart: unless-stopped
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+      elasticsearch:
+        condition: service_healthy
+      mailpit:
+        condition: service_started
+    environment:
+      APP_PORT: 3020
+      RABBITMQ_HOST: rabbitmq
+      RABBITMQ_PORT: 5672
+      RABBITMQ_USERNAME: ${RABBITMQ_USERNAME:-guest}
+      RABBITMQ_PASSWORD: ${RABBITMQ_PASSWORD:-guest}
+      ELASTICSEARCH_URI: http://elasticsearch:9200
+      EMAIL_SMTP_HOST: mailpit
+      EMAIL_SMTP_PORT: 1025
+      EMAIL_SMTP_USERNAME: ${EMAIL_SMTP_USERNAME:-}
+      EMAIL_SMTP_PASSWORD: ${EMAIL_SMTP_PASSWORD:-}
+      EMAIL_SMTP_AUTH: ${EMAIL_SMTP_AUTH:-false}
+      EMAIL_SMTP_STARTTLS: ${EMAIL_SMTP_STARTTLS:-false}
+      EMAIL_SMTP_FROM: ${EMAIL_SMTP_FROM:-no-reply@series.local}
+      EMAIL_NOTIFICATION_QUEUE: ${EMAIL_NOTIFICATION_QUEUE:-series-email.notifications}
+      EMAIL_NOTIFICATION_EXCHANGE: ${EMAIL_NOTIFICATION_EXCHANGE:-series.notifications}
+      EMAIL_NOTIFICATION_ROUTING_KEY: ${EMAIL_NOTIFICATION_ROUTING_KEY:-email.notification}
+      EMAIL_RETRY_DELAY_MS: ${EMAIL_RETRY_DELAY_MS:-300000}
+    ports:
+      - "3021:3020"
+
   frontend:
     build:
       context: ./series-frontend
@@ -75,6 +166,7 @@ services:
       args:
         NEXT_PUBLIC_API_BASE_URL: http://localhost:9090/api/v1
         NEXT_PUBLIC_REVIEWS_API_BASE_URL: http://localhost:3010
+        NEXT_PUBLIC_EMAIL_API_BASE_URL: http://localhost:3021
         NEXT_PUBLIC_DEFAULT_LANGUAGE: ua
     container_name: series-analyzer-frontend
     restart: unless-stopped
@@ -89,3 +181,4 @@ services:
 volumes:
   postgres_data:
   mongo_data:
+  elasticsearch_data:

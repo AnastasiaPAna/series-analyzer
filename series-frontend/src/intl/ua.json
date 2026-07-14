@@ -1,4 +1,4 @@
-{
+﻿{
   "app.title": "Series Analyzer",
   "nav.home": "Головна",
   "nav.series": "Серіали",
@@ -11,14 +11,16 @@
   "home.catalog": "Відкрити каталог",
   "home.statistics": "Відкрити статистику",
   "home.create": "Створити серіал",
+  "home.profile": "Мій кабінет",
   "home.aboutTitle": "Що доступно зараз",
   "home.aboutText": "Список серіалів, сторінки деталей, створення нових записів, фільтри, пагінація та статистика з переходами без втрати вибраних параметрів.",
   "home.topTitle": "Найкращі зараз",
   "home.openTop": "Відкрити Топ 5",
   "home.reviewsTitle": "Останні відгуки",
   "home.reviewsSeriesLabel": "Серіал",
-  "home.reviewsEmpty": "Поки ще немає відгуків.",
+  "home.reviewsEmpty": "Поки що немає відгуків.",
   "home.openReviewSeries": "Відкрити серіал",
+  "home.reviewsHint": "Останні оцінки й коментарі видно тут. Для модерації відкрий окрему сторінку відгуків.",
   "home.metrics.series": "Серіали",
   "home.metrics.studios": "Студії",
   "home.metrics.rating": "Середній рейтинг",
@@ -42,6 +44,8 @@
   "series.add": "Додати серіал",
   "series.filter": "Фільтр",
   "series.clear": "Очистити",
+  "series.genre.limit": "Оберіть до 3 жанрів.",
+  "series.genre.limitReached": "Ви вже обрали 3 жанри. Зніміть один, щоб обрати інший.",
   "series.title": "Назва",
   "series.genre": "Жанр",
   "series.rating": "Рейтинг",
@@ -64,8 +68,11 @@
   "series.load.error": "Не вдалося завантажити дані",
   "series.delete.error": "Не вдалося видалити серіал",
   "series.save.error": "Не вдалося зберегти серіал",
+  "series.overview": "Короткий опис",
+  "series.trailer": "Трейлер",
   "reviews.sectionTitle": "Відгуки",
-  "reviews.summary": "{count, plural, =0 {Поки немає відгуків} one {# відгук, середня оцінка {rating}} few {# відгуки, середня оцінка {rating}} many {# відгуків, середня оцінка {rating}} other {# відгуку, середня оцінка {rating}}}",
+  "reviews.all": "Усі відгуки",
+  "reviews.summary": "{count, plural, =0 {Поки що немає відгуків} one {# відгук, середня оцінка {rating}} few {# відгуки, середня оцінка {rating}} many {# відгуків, середня оцінка {rating}} other {# відгуку, середня оцінка {rating}}}",
   "reviews.add": "Додати відгук",
   "reviews.save": "Зберегти відгук",
   "reviews.showMore": "Показати ще",
@@ -85,3 +92,6 @@
   "validation.rating": "Рейтинг має бути від 0 до 10",
   "validation.seasons": "Кількість сезонів має бути від 1 до 60"
 }
+
+
+

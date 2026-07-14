@@ -2,14 +2,11 @@ package org.example.series.core.model;
 
 import jakarta.persistence.*;
 
-
-
 /**
  * JPA entity representing a TV series.
  */
 @Entity
 @Table(name = "series")
-
 public class Series {
 
     @Id
@@ -38,6 +35,9 @@ public class Series {
     @Column(nullable = false)
     private boolean finished;
 
+    @Column(name = "trailer_url", length = 500)
+    private String trailerUrl;
+
     public Series() {}
 
     public Series(String title,
@@ -47,6 +47,17 @@ public class Series {
                   int year,
                   boolean finished,
                   Studio studio) {
+        this(title, genre, seasons, rating, year, finished, studio, null);
+    }
+
+    public Series(String title,
+                  String genre,
+                  int seasons,
+                  double rating,
+                  int year,
+                  boolean finished,
+                  Studio studio,
+                  String trailerUrl) {
         this.title = title;
         this.genre = genre;
         this.seasons = seasons;
@@ -54,6 +65,7 @@ public class Series {
         this.year = year;
         this.finished = finished;
         this.studio = studio;
+        this.trailerUrl = trailerUrl;
     }
 
     public Long getId() { return id; }
@@ -78,4 +90,7 @@ public class Series {
 
     public boolean isFinished() { return finished; }
     public void setFinished(boolean finished) { this.finished = finished; }
+
+    public String getTrailerUrl() { return trailerUrl; }
+    public void setTrailerUrl(String trailerUrl) { this.trailerUrl = trailerUrl; }
 }

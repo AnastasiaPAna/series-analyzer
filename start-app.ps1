@@ -38,6 +38,7 @@ try {
 
     Wait-Http -Url "http://localhost:9090/api/v1/studios" -Name "Spring API"
     Wait-Http -Url "http://localhost:3010/health" -Name "Reviews service"
+    Wait-Http -Url "http://localhost:3021/health" -Name "Email service"
     Wait-Http -Url "http://localhost:3000/" -Name "Frontend"
 
     Write-Host ""
@@ -45,6 +46,10 @@ try {
     Write-Host "  http://localhost:3000/"
     Write-Host "  http://localhost:9090/api/v1/studios"
     Write-Host "  http://localhost:3010/health"
+    Write-Host "  http://localhost:3021/health"
+    Write-Host "  http://localhost:15673"
+    Write-Host "  http://localhost:5602"
+    Write-Host "  http://localhost:8026"
 } finally {
     Pop-Location
 }

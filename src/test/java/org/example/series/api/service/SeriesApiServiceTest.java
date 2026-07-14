@@ -6,6 +6,7 @@ import org.example.series.core.model.Series;
 import org.example.series.core.model.Studio;
 import org.example.series.core.service.SeriesService;
 import org.example.series.core.service.StudioService;
+import org.example.series.integration.notification.SeriesCreatedNotificationPublisher;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import jakarta.validation.Validator;
@@ -18,6 +19,7 @@ class SeriesApiServiceTest {
 
     private SeriesService seriesService;
     private SeriesApiService service;
+    private SeriesCreatedNotificationPublisher notificationPublisher;
 
     @BeforeEach
     void setup() {
@@ -25,12 +27,14 @@ class SeriesApiServiceTest {
         StudioService studioService = mock(StudioService.class);
         ReportStore reportStore = mock(ReportStore.class);
         Validator validator = mock(Validator.class);
+        notificationPublisher = mock(SeriesCreatedNotificationPublisher.class);
 
         service = new SeriesApiService(
                 seriesService,
                 studioService,
                 reportStore,
-                validator
+                validator,
+                notificationPublisher
         );
     }
 
@@ -89,5 +93,6 @@ class SeriesApiServiceTest {
         var response = service.create(request);
 
         assertEquals("Dark", response.getTitle());
+        verify(notificationPublisher).publishSeriesCreated(saved);
     }
 }

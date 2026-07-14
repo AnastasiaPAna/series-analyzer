@@ -4,13 +4,10 @@ import jakarta.validation.constraints.*;
 import org.example.series.api.validation.StudioExists;
 import org.example.series.api.validation.ValidSeriesState;
 
-
-
 /**
  * SeriesRequest component.
  */
 @ValidSeriesState
-
 public class SeriesRequest {
 
     @NotBlank(message = "Title must not be blank")
@@ -44,6 +41,13 @@ public class SeriesRequest {
     @Pattern(regexp = "^[\\p{L}0-9, .:'-]+$", message = "Genre contains invalid characters")
     private String genre;
 
+    @Size(max = 500, message = "Trailer URL is too long")
+    @Pattern(
+            regexp = "^(|https?://(www\\.)?(youtube\\.com|youtu\\.be)/.+)$",
+            message = "Trailer URL must be a valid YouTube link"
+    )
+    private String trailerUrl;
+
     public String getGenre() { return genre; }
     public void setGenre(String genre) { this.genre = genre; }
 
@@ -64,4 +68,7 @@ public class SeriesRequest {
 
     public Long getStudioId() { return studioId; }
     public void setStudioId(Long studioId) { this.studioId = studioId; }
+
+    public String getTrailerUrl() { return trailerUrl; }
+    public void setTrailerUrl(String trailerUrl) { this.trailerUrl = trailerUrl; }
 }

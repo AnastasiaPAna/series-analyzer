@@ -1,0 +1,95 @@
+﻿databaseChangeLog:
+  - changeSet:
+      id: 017-refresh-series-trailer-links
+      author: codex
+      context: seed
+      changes:
+        - update:
+            tableName: series
+            columns:
+              - column: { name: trailer_url, value: "https://www.youtube.com/watch?v=GXrDYboUnnw" }
+            where: title = 'The Originals'
+
+        - update:
+            tableName: series
+            columns:
+              - column: { name: trailer_url, value: "https://www.youtube.com/watch?v=xHHM5VTATJo" }
+            where: title = 'Legacies'
+
+        - update:
+            tableName: series
+            columns:
+              - column: { name: trailer_url, value: "https://www.youtube.com/watch?v=lnY9FWUTY84" }
+            where: title = 'The Good Doctor'
+
+        - update:
+            tableName: series
+            columns:
+              - column: { name: trailer_url, value: "https://www.youtube.com/watch?v=UR4Pxgnm-GA" }
+            where: title = 'Euphoria'
+
+        - update:
+            tableName: series
+            columns:
+              - column: { name: trailer_url, value: "https://www.youtube.com/watch?v=V0XOApF5nLU" }
+            where: title = 'Black Mirror'
+
+        - update:
+            tableName: series
+            columns:
+              - column: { name: trailer_url, value: "https://www.youtube.com/watch?v=fXmAurh012s" }
+            where: title = 'Arcane'
+
+        - update:
+            tableName: series
+            columns:
+              - column: { name: trailer_url, value: "https://www.youtube.com/watch?v=rXMrTALO2ME" }
+            where: title = 'Sherlock'
+
+        - update:
+            tableName: series
+            columns:
+              - column: { name: trailer_url, value: "https://www.youtube.com/watch?v=uLtkt8BonwM" }
+            where: title = 'The Last of Us'
+
+        - update:
+            tableName: series
+            columns:
+              - column: { name: trailer_url, value: "https://www.youtube.com/watch?v=gpv7ayf_tyE" }
+            where: title = 'Bridgerton'
+
+        - update:
+            tableName: series
+            columns:
+              - column: { name: trailer_url, value: "https://www.youtube.com/watch?v=lcvUGs3xaDM" }
+            where: title = 'Peaky Blinders'
+
+        - update:
+            tableName: series
+            columns:
+              - column: { name: trailer_url, value: "https://www.youtube.com/watch?v=JWtnJjn6ng0" }
+            where: title = 'The Crown'
+
+        - update:
+            tableName: series
+            columns:
+              - column: { name: trailer_url, value: "https://www.youtube.com/watch?v=xEQP4VVuyrY" }
+            where: title = 'Severance'
+
+        - update:
+            tableName: series
+            columns:
+              - column: { name: trailer_url, value: "https://www.youtube.com/watch?v=gBmkI4jlaIo" }
+            where: title = 'The Bear'
+
+        - update:
+            tableName: series
+            columns:
+              - column: { name: trailer_url, value: "https://www.youtube.com/watch?v=fVQUcaO4AvE" }
+            where: title = 'True Detective'
+
+        - update:
+            tableName: series
+            columns:
+              - column: { name: trailer_url, value: "https://www.youtube.com/watch?v=ndl1W4ltcmg" }
+            where: title = 'The Witcher'

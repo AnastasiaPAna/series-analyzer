@@ -1,0 +1,24 @@
+databaseChangeLog:
+  - changeSet:
+      id: 009-add-subscriber-auth
+      author: codex
+      changes:
+        - addColumn:
+            tableName: subscriber_profiles
+            columns:
+              - column:
+                  name: password_hash
+                  type: varchar(120)
+                  defaultValue: '$2a$10$S9a0c8yR9rwQIlFZLxM7z.1FobqdMI9D0PfrxGX2YeliYg5OtTS2K'
+                  constraints:
+                    nullable: false
+              - column:
+                  name: auth_token
+                  type: varchar(120)
+              - column:
+                  name: auth_token_issued_at
+                  type: timestamp
+        - addUniqueConstraint:
+            tableName: subscriber_profiles
+            columnNames: auth_token
+            constraintName: uk_subscriber_profiles_auth_token

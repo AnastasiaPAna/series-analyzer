@@ -1,26 +1,10 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import type { Language } from '@/constants/languages';
+import { ADMIN_LOGIN, ADMIN_PASSWORD } from '@/constants/admin';
 
 const ADMIN_MODE_KEY = 'series-admin-mode';
 const ADMIN_USER_KEY = 'series-admin-user';
-
-export const ADMIN_LOGIN = 'admin';
-export const ADMIN_PASSWORD = 'admin123';
-export const ADMIN_ACCESS_TOKEN = 'series-admin-access';
-
-export function getAdminReviewsServiceUrl(language: Language) {
-  // Moderation happens in the reviews service itself, so from the frontend
-  // we only need to build the link that opens that screen with admin access.
-  const params = new URLSearchParams({
-    lang: language,
-    admin: ADMIN_LOGIN,
-    token: ADMIN_ACCESS_TOKEN,
-  });
-
-  return `http://localhost:3010/?${params.toString()}`;
-}
 
 export function useAdminMode() {
   const [isAdmin, setIsAdmin] = useState(false);
@@ -53,3 +37,5 @@ export function useAdminMode() {
 
   return { isAdmin, adminUser, login, logout };
 }
+
+export { ADMIN_LOGIN, ADMIN_PASSWORD };

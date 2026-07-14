@@ -1,0 +1,159 @@
+databaseChangeLog:
+  - changeSet:
+      id: 007-seed-more-series
+      author: series
+      context: seed
+      changes:
+        - insert:
+            tableName: series
+            columns:
+              - column: { name: title, value: "Dark" }
+              - column: { name: genre, value: "Science Fiction, Mystery, Drama" }
+              - column: { name: seasons, valueNumeric: 3 }
+              - column: { name: rating, valueNumeric: 8.7 }
+              - column: { name: year, valueNumeric: 2017 }
+              - column: { name: finished, valueBoolean: true }
+              - column: { name: studio_id, valueNumeric: 1 }
+
+        - insert:
+            tableName: series
+            columns:
+              - column: { name: title, value: "Black Mirror" }
+              - column: { name: genre, value: "Science Fiction, Thriller, Drama" }
+              - column: { name: seasons, valueNumeric: 6 }
+              - column: { name: rating, valueNumeric: 8.8 }
+              - column: { name: year, valueNumeric: 2011 }
+              - column: { name: finished, valueBoolean: false }
+              - column: { name: studio_id, valueNumeric: 1 }
+
+        - insert:
+            tableName: series
+            columns:
+              - column: { name: title, value: "Arcane" }
+              - column: { name: genre, value: "Fantasy, Adventure, Drama" }
+              - column: { name: seasons, valueNumeric: 2 }
+              - column: { name: rating, valueNumeric: 9.0 }
+              - column: { name: year, valueNumeric: 2021 }
+              - column: { name: finished, valueBoolean: false }
+              - column: { name: studio_id, valueNumeric: 2 }
+
+        - insert:
+            tableName: series
+            columns:
+              - column: { name: title, value: "Sherlock" }
+              - column: { name: genre, value: "Detective, Crime, Drama" }
+              - column: { name: seasons, valueNumeric: 4 }
+              - column: { name: rating, valueNumeric: 9.1 }
+              - column: { name: year, valueNumeric: 2010 }
+              - column: { name: finished, valueBoolean: true }
+              - column: { name: studio_id, valueNumeric: 4 }
+
+        - insert:
+            tableName: series
+            columns:
+              - column: { name: title, value: "The Last of Us" }
+              - column: { name: genre, value: "Drama, Thriller, Adventure" }
+              - column: { name: seasons, valueNumeric: 2 }
+              - column: { name: rating, valueNumeric: 8.8 }
+              - column: { name: year, valueNumeric: 2023 }
+              - column: { name: finished, valueBoolean: false }
+              - column: { name: studio_id, valueNumeric: 6 }
+
+        - insert:
+            tableName: series
+            columns:
+              - column: { name: title, value: "House of the Dragon" }
+              - column: { name: genre, value: "Fantasy, Drama, Adventure" }
+              - column: { name: seasons, valueNumeric: 2 }
+              - column: { name: rating, valueNumeric: 8.4 }
+              - column: { name: year, valueNumeric: 2022 }
+              - column: { name: finished, valueBoolean: false }
+              - column: { name: studio_id, valueNumeric: 6 }
+
+        - insert:
+            tableName: series
+            columns:
+              - column: { name: title, value: "Bridgerton" }
+              - column: { name: genre, value: "Drama, Romance, Mystery" }
+              - column: { name: seasons, valueNumeric: 3 }
+              - column: { name: rating, valueNumeric: 7.4 }
+              - column: { name: year, valueNumeric: 2020 }
+              - column: { name: finished, valueBoolean: false }
+              - column: { name: studio_id, valueNumeric: 1 }
+
+        - insert:
+            tableName: series
+            columns:
+              - column: { name: title, value: "Peaky Blinders" }
+              - column: { name: genre, value: "Crime, Drama, Thriller" }
+              - column: { name: seasons, valueNumeric: 6 }
+              - column: { name: rating, valueNumeric: 8.8 }
+              - column: { name: year, valueNumeric: 2013 }
+              - column: { name: finished, valueBoolean: true }
+              - column: { name: studio_id, valueNumeric: 4 }
+
+        - insert:
+            tableName: series
+            columns:
+              - column: { name: title, value: "The Crown" }
+              - column: { name: genre, value: "Political Drama, Drama" }
+              - column: { name: seasons, valueNumeric: 6 }
+              - column: { name: rating, valueNumeric: 8.6 }
+              - column: { name: year, valueNumeric: 2016 }
+              - column: { name: finished, valueBoolean: true }
+              - column: { name: studio_id, valueNumeric: 1 }
+
+        - insert:
+            tableName: series
+            columns:
+              - column: { name: title, value: "Severance" }
+              - column: { name: genre, value: "Science Fiction, Thriller, Mystery" }
+              - column: { name: seasons, valueNumeric: 2 }
+              - column: { name: rating, valueNumeric: 8.7 }
+              - column: { name: year, valueNumeric: 2022 }
+              - column: { name: finished, valueBoolean: false }
+              - column: { name: studio_id, valueNumeric: 2 }
+
+        - insert:
+            tableName: series
+            columns:
+              - column: { name: title, value: "The Bear" }
+              - column: { name: genre, value: "Drama, Comedy" }
+              - column: { name: seasons, valueNumeric: 3 }
+              - column: { name: rating, valueNumeric: 8.5 }
+              - column: { name: year, valueNumeric: 2022 }
+              - column: { name: finished, valueBoolean: false }
+              - column: { name: studio_id, valueNumeric: 2 }
+
+        - insert:
+            tableName: series
+            columns:
+              - column: { name: title, value: "True Detective" }
+              - column: { name: genre, value: "Detective, Crime, Thriller" }
+              - column: { name: seasons, valueNumeric: 4 }
+              - column: { name: rating, valueNumeric: 8.9 }
+              - column: { name: year, valueNumeric: 2014 }
+              - column: { name: finished, valueBoolean: false }
+              - column: { name: studio_id, valueNumeric: 6 }
+
+        - insert:
+            tableName: series
+            columns:
+              - column: { name: title, value: "The Witcher" }
+              - column: { name: genre, value: "Fantasy, Adventure, Drama" }
+              - column: { name: seasons, valueNumeric: 3 }
+              - column: { name: rating, valueNumeric: 8.0 }
+              - column: { name: year, valueNumeric: 2019 }
+              - column: { name: finished, valueBoolean: false }
+              - column: { name: studio_id, valueNumeric: 1 }
+
+        - insert:
+            tableName: series
+            columns:
+              - column: { name: title, value: "From" }
+              - column: { name: genre, value: "Horror, Mystery, Thriller" }
+              - column: { name: seasons, valueNumeric: 3 }
+              - column: { name: rating, valueNumeric: 7.8 }
+              - column: { name: year, valueNumeric: 2022 }
+              - column: { name: finished, valueBoolean: false }
+              - column: { name: studio_id, valueNumeric: 5 }

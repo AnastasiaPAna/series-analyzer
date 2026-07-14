@@ -1,4 +1,4 @@
-import express from "express";
+﻿import express from "express";
 import mongoose from "mongoose";
 import request from "supertest";
 import { AddressInfo } from "node:net";
@@ -232,4 +232,86 @@ describe("Reviews API integration", () => {
     const stillExists = await ReviewModel.findById(created._id);
     expect(stillExists).toBeNull();
   });
+  it("DELETE /api/entity3/:id returns 403 without a valid admin token", async () => {
+    const created = await ReviewModel.create({
+      seriesId: 1,
+      reviewerName: "Anna",
+      comment: "Review that should stay in place without admin permissions.",
+      rating: 8,
+      publishedAt: new Date("2024-01-10T10:00:00.000Z")
+    });
+
+    const app = createApp(appConfig);
+
+    const response = await request(app)
+      .delete(`/api/entity3/${String(created._id)}`);
+
+    expect(response.status).toBe(403);
+    expect(response.body.message).toContain("Admin access token is invalid");
+
+    const stillExists = await ReviewModel.findById(created._id);
+    expect(stillExists).not.toBeNull();
+  });
+
+  it("PUT /api/entity3/:id updates an existing review for admin moderation", async () => {
+    const created = await ReviewModel.create({
+      seriesId: 1,
+      reviewerName: "Anna",
+      comment: "Original review text before the admin edit.",
+      rating: 8,
+      publishedAt: new Date("2024-01-10T10:00:00.000Z")
+    });
+
+    const app = createApp(appConfig);
+
+    const response = await request(app)
+      .put(`/api/entity3/${String(created._id)}`)
+      .set("X-Admin-Token", appConfig.adminAccessToken)
+      .send({
+        seriesId: 1,
+        reviewerName: "Anna Updated",
+        comment: "Updated review text after the moderation edit.",
+        rating: 9.5
+      });
+
+    expect(response.status).toBe(200);
+    expect(response.body.reviewerName).toBe("Anna Updated");
+    expect(response.body.comment).toBe("Updated review text after the moderation edit.");
+    expect(response.body.rating).toBe(9.5);
+
+    const stored = await ReviewModel.findById(created._id).lean();
+    expect(stored?.reviewerName).toBe("Anna Updated");
+    expect(stored?.comment).toBe("Updated review text after the moderation edit.");
+    expect(stored?.rating).toBe(9.5);
+  });
+
+  it("PUT /api/entity3/:id returns 403 without a valid admin token", async () => {
+    const created = await ReviewModel.create({
+      seriesId: 1,
+      reviewerName: "Anna",
+      comment: "Original review text before a forbidden update.",
+      rating: 8,
+      publishedAt: new Date("2024-01-10T10:00:00.000Z")
+    });
+
+    const app = createApp(appConfig);
+
+    const response = await request(app)
+      .put(`/api/entity3/${String(created._id)}`)
+      .send({
+        seriesId: 1,
+        reviewerName: "Blocked edit",
+        comment: "This update should not pass without the admin token.",
+        rating: 9
+      });
+
+    expect(response.status).toBe(403);
+    expect(response.body.message).toContain("Admin access token is invalid");
+
+    const stored = await ReviewModel.findById(created._id).lean();
+    expect(stored?.reviewerName).toBe("Anna");
+    expect(stored?.comment).toBe("Original review text before a forbidden update.");
+    expect(stored?.rating).toBe(8);
+  });
 });
+

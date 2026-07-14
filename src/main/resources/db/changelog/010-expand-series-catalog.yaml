@@ -1,0 +1,169 @@
+﻿databaseChangeLog:
+  - changeSet:
+      id: 010-expand-series-catalog
+      author: series
+      context: seed
+      changes:
+        - update:
+            tableName: series
+            columns:
+              - column: { name: title, value: "Stranger Things" }
+            where: id = 1
+
+        - update:
+            tableName: series
+            columns:
+              - column: { name: title, value: "Wednesday" }
+            where: id = 2
+
+        - update:
+            tableName: series
+            columns:
+              - column: { name: title, value: "The Vampire Diaries" }
+            where: id = 3
+
+        - update:
+            tableName: series
+            columns:
+              - column: { name: title, value: "The Originals" }
+            where: id = 4
+
+        - update:
+            tableName: series
+            columns:
+              - column: { name: title, value: "Legacies" }
+            where: id = 5
+
+        - update:
+            tableName: series
+            columns:
+              - column: { name: title, value: "The Shield" }
+            where: id = 6
+
+        - update:
+            tableName: series
+            columns:
+              - column: { name: title, value: "The Good Doctor" }
+            where: id = 7
+
+        - update:
+            tableName: series
+            columns:
+              - column: { name: title, value: "Locke & Key" }
+            where: id = 8
+
+        - update:
+            tableName: series
+            columns:
+              - column: { name: title, value: "Game of Thrones" }
+            where: id = 9
+
+        - insert:
+            tableName: series
+            columns:
+              - column: { name: title, value: "Silo" }
+              - column: { name: genre, value: "Science Fiction, Mystery, Thriller" }
+              - column: { name: seasons, valueNumeric: 2 }
+              - column: { name: rating, valueNumeric: 8.1 }
+              - column: { name: year, valueNumeric: 2023 }
+              - column: { name: finished, valueBoolean: false }
+              - column: { name: studio_id, valueNumeric: 2 }
+
+        - insert:
+            tableName: series
+            columns:
+              - column: { name: title, value: "Euphoria" }
+              - column: { name: genre, value: "Teen Drama, Drama" }
+              - column: { name: seasons, valueNumeric: 2 }
+              - column: { name: rating, valueNumeric: 8.3 }
+              - column: { name: year, valueNumeric: 2019 }
+              - column: { name: finished, valueBoolean: false }
+              - column: { name: studio_id, valueNumeric: 5 }
+
+        - insert:
+            tableName: series
+            columns:
+              - column: { name: title, value: "Ozark" }
+              - column: { name: genre, value: "Crime, Drama, Thriller" }
+              - column: { name: seasons, valueNumeric: 4 }
+              - column: { name: rating, valueNumeric: 8.5 }
+              - column: { name: year, valueNumeric: 2017 }
+              - column: { name: finished, valueBoolean: true }
+              - column: { name: studio_id, valueNumeric: 1 }
+
+        - insert:
+            tableName: series
+            columns:
+              - column: { name: title, value: "Mindhunter" }
+              - column: { name: genre, value: "Detective, Crime, Thriller" }
+              - column: { name: seasons, valueNumeric: 2 }
+              - column: { name: rating, valueNumeric: 8.6 }
+              - column: { name: year, valueNumeric: 2017 }
+              - column: { name: finished, valueBoolean: false }
+              - column: { name: studio_id, valueNumeric: 1 }
+
+        - insert:
+            tableName: series
+            columns:
+              - column: { name: title, value: "The Boys" }
+              - column: { name: genre, value: "Science Fiction, Comedy, Drama" }
+              - column: { name: seasons, valueNumeric: 4 }
+              - column: { name: rating, valueNumeric: 8.7 }
+              - column: { name: year, valueNumeric: 2019 }
+              - column: { name: finished, valueBoolean: false }
+              - column: { name: studio_id, valueNumeric: 4 }
+
+        - insert:
+            tableName: series
+            columns:
+              - column: { name: title, value: "Chernobyl" }
+              - column: { name: genre, value: "Political Drama, Thriller, Drama" }
+              - column: { name: seasons, valueNumeric: 1 }
+              - column: { name: rating, valueNumeric: 9.3 }
+              - column: { name: year, valueNumeric: 2019 }
+              - column: { name: finished, valueBoolean: true }
+              - column: { name: studio_id, valueNumeric: 5 }
+
+        - insert:
+            tableName: series
+            columns:
+              - column: { name: title, value: "Westworld" }
+              - column: { name: genre, value: "Science Fiction, Thriller, Mystery" }
+              - column: { name: seasons, valueNumeric: 4 }
+              - column: { name: rating, valueNumeric: 8.4 }
+              - column: { name: year, valueNumeric: 2016 }
+              - column: { name: finished, valueBoolean: true }
+              - column: { name: studio_id, valueNumeric: 5 }
+
+        - insert:
+            tableName: series
+            columns:
+              - column: { name: title, value: "Fargo" }
+              - column: { name: genre, value: "Crime, Detective, Drama" }
+              - column: { name: seasons, valueNumeric: 5 }
+              - column: { name: rating, valueNumeric: 8.8 }
+              - column: { name: year, valueNumeric: 2014 }
+              - column: { name: finished, valueBoolean: false }
+              - column: { name: studio_id, valueNumeric: 4 }
+
+        - insert:
+            tableName: series
+            columns:
+              - column: { name: title, value: "Mr. Robot" }
+              - column: { name: genre, value: "Thriller, Drama, Crime" }
+              - column: { name: seasons, valueNumeric: 4 }
+              - column: { name: rating, valueNumeric: 8.5 }
+              - column: { name: year, valueNumeric: 2015 }
+              - column: { name: finished, valueBoolean: true }
+              - column: { name: studio_id, valueNumeric: 4 }
+
+        - insert:
+            tableName: series
+            columns:
+              - column: { name: title, value: "Better Call Saul" }
+              - column: { name: genre, value: "Crime, Drama, Comedy" }
+              - column: { name: seasons, valueNumeric: 6 }
+              - column: { name: rating, valueNumeric: 9.0 }
+              - column: { name: year, valueNumeric: 2015 }
+              - column: { name: finished, valueBoolean: true }
+              - column: { name: studio_id, valueNumeric: 3 }

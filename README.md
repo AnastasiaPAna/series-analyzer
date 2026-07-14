@@ -1,153 +1,152 @@
 # Series Analyzer
 
-`Series Analyzer` — це pet-проєкт для роботи з каталогом серіалів, студіями, статистикою та відгуками в одному репозиторії.
+Full-stack application for managing a series catalog, reviews, subscriber profiles, and asynchronous email notifications.
 
-У проєкті поєднані:
+## Stack
 
-- Java backend для предметної області серіалів і студій
-- сучасний frontend на `Next.js + TypeScript + Material UI + react-intl`
-- окремий `Node.js + TypeScript` reviews service на `MongoDB`
-- єдиний запуск через `Docker`
+- `Spring Boot` - main backend
+- `Next.js + TypeScript + Material UI + react-intl` - frontend
+- `Node.js + TypeScript + MongoDB` - reviews service
+- `Spring Boot + RabbitMQ + Elasticsearch + SMTP` - email delivery service
+- `Docker Compose` - startup of the whole environment
 
-## Швидкий запуск
+## Run
 
-Передумова:
+Prerequisite:
 
-- встановлений і запущений `Docker Desktop`
+- `Docker Desktop` is installed and running
 
-Клонування і перехід на актуальну гілку:
+Start the whole project from the repository root:
 
 ```powershell
-git clone https://github.com/AnastasiaPAna/series-analyzer.git
-cd series-analyzer
-git checkout block4-fix
+docker compose up --build -d
 ```
 
-Запуск із кореня проєкту:
+Alternative startup:
 
 ```powershell
 .\start-app.ps1
 ```
 
-Зупинка:
+Stop the project:
 
 ```powershell
 .\stop-app.ps1
 ```
 
-Після запуску доступні:
+On the first launch the initial studios and series are loaded automatically.
+
+## Main URLs
+
+Use these URLs for review:
 
 - Frontend: `http://localhost:3000/`
-- Spring API: `http://localhost:9090/api/v1/studios`
-- Reviews health-check: `http://localhost:3010/health`
-- Reviews service page: `http://localhost:3010/`
+- Reviews service health-check: `http://localhost:3010/health`
+- Email service health-check: `http://localhost:3021/health`
+- Mailpit UI: `http://localhost:8026`
 
-На чистій БД стартові студії та серіали підтягуються автоматично під час першого запуску.
+## Implemented functionality
 
-## Що реалізовано
+### Main application
 
-У проєкті є:
+- series list and details
+- studio data
+- search, filters, and pagination
+- create, edit, and delete series
+- statistics page
+- top 5 page
+- `UA / EN` localization
 
-- каталог серіалів
-- каталог студій
-- пошук і фільтрація
-- пагінація
-- сторінка деталей серіалу
-- створення, редагування і видалення серіалів
-- статистика
-- список найкращих серіалів
-- локалізація `UA / EN`
-- окремий reviews service
-- інтеграція відгуків у frontend
-- кількість відгуків у списку серіалів
-- сторінка всіх відгуків
-- admin mode для дій керування
+### Reviews service
 
-## Admin access
+- separate microservice for reviews
+- review creation with validation
+- automatic `publishedAt` handling
+- validation of related series existence through the main backend
+- review list for one series with pagination
+- review counts for a list of series ids through aggregation
+- admin review moderation
+- integration tests for create, list, counts, recent, update, and delete scenarios
 
-Адмін-доступ вмикається через кнопку `Admin` у шапці frontend.
-
-Дані для входу:
-
-- login: `admin`
-- password: `admin123`
-
-Після входу в admin mode:
-
-- стають доступними створення, редагування і видалення серіалів
-- у шапці з’являється `All reviews`
-- `All reviews` відкриває окремий reviews service на `http://localhost:3010/`
-- у reviews service доступні:
-  - перегляд усіх останніх відгуків
-  - перехід на сторінку серіалу
-  - редагування відгуку
-  - видалення відгуку
-
-Прямий вхід на `http://localhost:3010/` без admin-доступу закритий.
-
-## Reviews service
-
-Сервіс відгуків реалізований у `block4-reviews-service/`.
-
-Предметна область:
-
-- `Series` — основна сутність
-- `Review` — окрема сутність відгуку
-- один серіал може мати багато відгуків
-- кожен відгук містить дату/час публікації `publishedAt`
-
-Використані технології:
-
-- `Node.js`
-- `TypeScript`
-- `Express`
-- `MongoDB`
-- `Mongoose`
-
-Основні endpoint-и:
+Main endpoints:
 
 ```http
 GET  /health
 POST /api/entity3
 GET  /api/entity3?entity1Id=1&size=5&from=0
 POST /api/entity3/_counts
+GET  /api/entity3/recent?size=10
+PUT  /api/entity3/:id
+DELETE /api/entity3/:id
 ```
 
-Що робить reviews service:
+### Email delivery service
 
-- створює новий відгук
-- валідує обов’язкові поля
-- автоматично проставляє `publishedAt`, якщо дата не передана
-- перевіряє існування серіалу через сервіс із Java backend
-- повертає список відгуків по одному серіалу
-- сортує відгуки від нових до старих
-- підтримує пагінацію через `size` і `from`
-- повертає кількість відгуків по масиву `entity1Ids`
-- використовує aggregation query для `_counts`
-- містить інтеграційні тести для endpoint-ів
+- separate Java microservice for email delivery
+- asynchronous message consumption from `RabbitMQ`
+- message storage in `Elasticsearch`
+- SMTP delivery through `JavaMailSender`
+- statuses `PENDING`, `SENT`, `FAILED`
+- storing `errorMessage`, `attemptCount`, `lastAttemptAt`, and `sentAt`
+- retry of failed messages every 5 minutes
+- integration with the main backend on series creation and on new season release
+- integration tests for successful send, failed send, successful retry, failed retry, and admin API access
 
-## Що додано після останнього оновлення
+Main endpoints:
 
-Останні доробки:
+```http
+GET /health
+GET /api/emails
+GET /api/emails?status=FAILED
+GET /api/admin/messages
+POST /api/admin/messages/retry-failed
+POST /api/admin/messages/{id}/retry
+GET /api/admin/email-settings
+PUT /api/admin/email-settings
+```
 
-- єдиний запуск усього проєкту через `Docker`
-- прибрано окремі паралельні сценарії старту
-- frontend і reviews service піднімаються разом з БД та backend
-- додано `Admin` login у шапці frontend
-- `All reviews` тепер відкриває окремий reviews service
-- reviews service закритий від прямого доступу без admin-входу
-- додано admin moderation для reviews:
-  - edit review
-  - delete review
-- редагування і видалення серіалів прив’язані до admin mode
-- відображення назв серіалів і жанрів працює для `UA / EN`
-- сторінка reviews service оформлена як окремий інтерфейс для роботи з усіма відгуками
+## Admin access
 
-## Структура проєкту
+Admin mode is enabled through the `Admin` button in the frontend header.
 
-- `src/main/java` — Spring Boot backend
-- `src/main/resources/db` — Liquibase changelog-и
-- `series-frontend/` — frontend
-- `block4-reviews-service/` — сервіс відгуків
-- `data/` — JSON-дані для імпорту
-- `postman/` — Postman collection
+Credentials:
+
+- login: `admin`
+- password: `admin123`
+
+After login the following actions become available:
+
+- series create, edit, and delete
+- review moderation
+- email control page
+- SMTP settings and notification template management
+
+## Email configuration
+
+Email-related configuration is stored in `.env`.
+
+Main variables:
+
+- `RABBITMQ_HOST`
+- `RABBITMQ_PORT`
+- `RABBITMQ_USERNAME`
+- `RABBITMQ_PASSWORD`
+- `NOTIFICATION_ADMIN_EMAIL`
+- `EMAIL_NOTIFICATION_QUEUE`
+- `EMAIL_NOTIFICATION_EXCHANGE`
+- `EMAIL_NOTIFICATION_ROUTING_KEY`
+- `EMAIL_SMTP_HOST`
+- `EMAIL_SMTP_PORT`
+- `EMAIL_SMTP_USERNAME`
+- `EMAIL_SMTP_PASSWORD`
+- `EMAIL_SMTP_AUTH`
+- `EMAIL_SMTP_STARTTLS`
+- `EMAIL_SMTP_FROM`
+- `EMAIL_RETRY_DELAY_MS`
+
+## Structure
+
+- `src/main/java` - Spring Boot backend
+- `series-frontend/` - frontend
+- `block4-reviews-service/` - reviews service
+- `block5-email-service/` - email delivery service

@@ -1,4 +1,4 @@
-databaseChangeLog:
+﻿databaseChangeLog:
 
   - include:
       file: db/changelog/001-create-studio.yaml
@@ -18,3 +18,44 @@ databaseChangeLog:
 
   - include:
       file: db/changelog/006-fix-sequences.yaml
+
+  - include:
+      file: db/changelog/007-seed-more-series.yaml
+      context: seed
+
+  - include:
+      file: db/changelog/008-create-subscriber-profiles.yaml
+
+  - include:
+      file: db/changelog/009-add-subscriber-auth.yaml
+
+  - include:
+      file: db/changelog/010-expand-series-catalog.yaml
+      context: seed
+
+  - include:
+      file: db/changelog/011-update-good-doctor-status.yaml
+      context: seed
+
+  - include:
+      file: db/changelog/012-marvel-refresh.yaml
+      context: seed
+
+  - include:
+      file: db/changelog/013-expand-marvel-catalog.yaml
+      context: seed
+  - include:
+      file: db/changelog/014-expand-marvel-lineup.yaml
+      context: seed
+
+
+  - include:
+      file: db/changelog/015-add-trailer-url-to-series.yaml
+
+  - include:
+      file: db/changelog/016-seed-series-trailers.yaml
+      context: seed
+
+  - include:
+      file: db/changelog/017-refresh-series-trailer-links.yaml
+      context: seed

@@ -1,0 +1,11 @@
+databaseChangeLog:
+  - changeSet:
+      id: 015-add-trailer-url-to-series
+      author: codex
+      changes:
+        - addColumn:
+            tableName: series
+            columns:
+              - column:
+                  name: trailer_url
+                  type: varchar(500)

@@ -1,0 +1,185 @@
+databaseChangeLog:
+  - changeSet:
+      id: 016-seed-series-trailers
+      author: codex
+      context: seed
+      changes:
+        - update:
+            tableName: series
+            columns:
+              - column: { name: trailer_url, value: "https://www.youtube.com/watch?v=b9EkMc79ZSU" }
+            where: title = 'Stranger Things'
+
+        - update:
+            tableName: series
+            columns:
+              - column: { name: trailer_url, value: "https://www.youtube.com/watch?v=Di310WS8zLk" }
+            where: title = 'Wednesday'
+
+        - update:
+            tableName: series
+            columns:
+              - column: { name: trailer_url, value: "https://www.youtube.com/watch?v=BmVmhjjkN4E" }
+            where: title = 'The Vampire Diaries'
+
+        - update:
+            tableName: series
+            columns:
+              - column: { name: trailer_url, value: "https://www.youtube.com/watch?v=YdBq4MTS7fQ" }
+            where: title = 'The Originals'
+
+        - update:
+            tableName: series
+            columns:
+              - column: { name: trailer_url, value: "https://www.youtube.com/watch?v=0kzMhj5M3uY" }
+            where: title = 'Legacies'
+
+        - update:
+            tableName: series
+            columns:
+              - column: { name: trailer_url, value: "https://www.youtube.com/watch?v=T3T-evQZiQo" }
+            where: title = 'Agents of S.H.I.E.L.D.'
+
+        - update:
+            tableName: series
+            columns:
+              - column: { name: trailer_url, value: "https://www.youtube.com/watch?v=fYlZDTru55g" }
+            where: title = 'The Good Doctor'
+
+        - update:
+            tableName: series
+            columns:
+              - column: { name: trailer_url, value: "https://www.youtube.com/watch?v=_EonRi0yQOE" }
+            where: title = 'Locke & Key'
+
+        - update:
+            tableName: series
+            columns:
+              - column: { name: trailer_url, value: "https://www.youtube.com/watch?v=KPLWWIOCOOQ" }
+            where: title = 'Game of Thrones'
+
+        - update:
+            tableName: series
+            columns:
+              - column: { name: trailer_url, value: "https://www.youtube.com/watch?v=8ZYhuvIv1pA" }
+            where: title = 'Silo'
+
+        - update:
+            tableName: series
+            columns:
+              - column: { name: trailer_url, value: "https://www.youtube.com/watch?v=JdwZwrs8Qt0" }
+            where: title = 'Euphoria'
+
+        - update:
+            tableName: series
+            columns:
+              - column: { name: trailer_url, value: "https://www.youtube.com/watch?v=5hAXVqrljbs" }
+            where: title = 'Ozark'
+
+        - update:
+            tableName: series
+            columns:
+              - column: { name: trailer_url, value: "https://www.youtube.com/watch?v=oFlKiTwhd38" }
+            where: title = 'Mindhunter'
+
+        - update:
+            tableName: series
+            columns:
+              - column: { name: trailer_url, value: "https://www.youtube.com/watch?v=M1bhOaLV4FU" }
+            where: title = 'The Boys'
+
+        - update:
+            tableName: series
+            columns:
+              - column: { name: trailer_url, value: "https://www.youtube.com/watch?v=s9APLXM9Ei8" }
+            where: title = 'Chernobyl'
+
+        - update:
+            tableName: series
+            columns:
+              - column: { name: trailer_url, value: "https://www.youtube.com/watch?v=IuS5huqOND4" }
+            where: title = 'Westworld'
+
+        - update:
+            tableName: series
+            columns:
+              - column: { name: trailer_url, value: "https://www.youtube.com/watch?v=VoJ_yZqhmAg" }
+            where: title = 'Fargo'
+
+        - update:
+            tableName: series
+            columns:
+              - column: { name: trailer_url, value: "https://www.youtube.com/watch?v=N6HGuJC--rk" }
+            where: title = 'Mr. Robot'
+
+        - update:
+            tableName: series
+            columns:
+              - column: { name: trailer_url, value: "https://www.youtube.com/watch?v=9q4qzYrHVmI" }
+            where: title = 'Better Call Saul'
+
+        - update:
+            tableName: series
+            columns:
+              - column: { name: trailer_url, value: "https://www.youtube.com/watch?v=rrwycJ08PSA" }
+            where: title = 'Dark'
+
+        - update:
+            tableName: series
+            columns:
+              - column: { name: trailer_url, value: "https://www.youtube.com/watch?v=DotnJ7tTA34" }
+            where: title = 'House of the Dragon'
+
+        - update:
+            tableName: series
+            columns:
+              - column: { name: trailer_url, value: "https://www.youtube.com/watch?v=pDHqAj4eJcM" }
+            where: title = 'From'
+
+        - update:
+            tableName: series
+            columns:
+              - column: { name: trailer_url, value: "https://www.youtube.com/watch?v=nW948Va-l10" }
+            where: title = 'Loki'
+
+        - update:
+            tableName: series
+            columns:
+              - column: { name: trailer_url, value: "https://www.youtube.com/watch?v=sj9J2ecsSpo" }
+            where: title = 'WandaVision'
+
+        - update:
+            tableName: series
+            columns:
+              - column: { name: trailer_url, value: "https://www.youtube.com/watch?v=x7Krla_UxRg" }
+            where: title = 'Moon Knight'
+
+        - update:
+            tableName: series
+            columns:
+              - column: { name: trailer_url, value: "https://www.youtube.com/watch?v=jAy6NJ_D5vU" }
+            where: title = 'Daredevil'
+
+        - update:
+            tableName: series
+            columns:
+              - column: { name: trailer_url, value: "https://www.youtube.com/watch?v=nWHUjuJ8zxE" }
+            where: title = 'Jessica Jones'
+
+        - update:
+            tableName: series
+            columns:
+              - column: { name: trailer_url, value: "https://www.youtube.com/watch?v=5VYb3B1ETlk" }
+            where: title = 'Hawkeye'
+
+        - update:
+            tableName: series
+            columns:
+              - column: { name: trailer_url, value: "https://www.youtube.com/watch?v=IWBsDaFWyTE" }
+            where: title = 'The Falcon and the Winter Soldier'
+
+        - update:
+            tableName: series
+            columns:
+              - column: { name: trailer_url, value: "https://www.youtube.com/watch?v=m9EX0f6V11Y" }
+            where: title = 'Ms. Marvel'

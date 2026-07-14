@@ -1,4 +1,4 @@
-{
+﻿{
   "app.title": "Series Analyzer",
   "nav.home": "Home",
   "nav.series": "Series",
@@ -11,6 +11,7 @@
   "home.catalog": "Open catalog",
   "home.statistics": "Open statistics",
   "home.create": "Create series",
+  "home.profile": "My profile",
   "home.aboutTitle": "What is available now",
   "home.aboutText": "Series list, details pages, new record creation, filters, pagination and statistics with navigation that keeps your selected parameters.",
   "home.topTitle": "Top rated now",
@@ -19,6 +20,7 @@
   "home.reviewsSeriesLabel": "Series",
   "home.reviewsEmpty": "No reviews yet.",
   "home.openReviewSeries": "Open series",
+  "home.reviewsHint": "Recent ratings and comments are shown here. Open the standalone reviews page for moderation.",
   "home.metrics.series": "Series",
   "home.metrics.studios": "Studios",
   "home.metrics.rating": "Average rating",
@@ -42,6 +44,8 @@
   "series.add": "Add series",
   "series.filter": "Filter",
   "series.clear": "Clear",
+  "series.genre.limit": "Choose up to 3 genres.",
+  "series.genre.limitReached": "You already selected 3 genres. Remove one to pick another.",
   "series.title": "Title",
   "series.genre": "Genre",
   "series.rating": "Rating",
@@ -64,7 +68,10 @@
   "series.load.error": "Failed to load data",
   "series.delete.error": "Failed to delete series",
   "series.save.error": "Failed to save series",
+  "series.overview": "Overview",
+  "series.trailer": "Trailer",
   "reviews.sectionTitle": "Reviews",
+  "reviews.all": "All reviews",
   "reviews.summary": "{count, plural, =0 {No reviews yet} one {# review, average {rating}} other {# reviews, average {rating}}}",
   "reviews.add": "Add review",
   "reviews.save": "Save review",
@@ -85,3 +92,5 @@
   "validation.rating": "Rating must be from 0 to 10",
   "validation.seasons": "Seasons count must be from 1 to 60"
 }
+
+

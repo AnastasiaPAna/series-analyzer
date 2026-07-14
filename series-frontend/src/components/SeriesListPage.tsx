@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useCallback, useEffect, useState } from 'react';
 import Link from 'next/link';
@@ -125,13 +125,49 @@ export default function SeriesListPage() {
 
   return (
     <Container maxWidth="lg" sx={{ py: 4 }}>
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
-        <Typography variant="h4" fontWeight={700}>{intl.formatMessage({ id: 'series.list.title' })}</Typography>
-        {isAdmin && (
-          <Button component={Link} href={`${SERIES_NEW}?${new URLSearchParams(paramsAsStrings).toString()}`} variant="contained">
-            {intl.formatMessage({ id: 'series.add' })}
-          </Button>
-        )}
+      <Box
+        sx={{
+          mb: 3,
+          p: { xs: 3, md: 4 },
+          borderRadius: 5,
+          color: '#ffffff',
+          background: 'linear-gradient(145deg, rgba(14,30,52,0.97) 0%, rgba(28,67,112,0.94) 48%, rgba(107,24,32,0.90) 100%)',
+          boxShadow: '0 30px 62px rgba(23, 48, 82, 0.30)',
+          border: '1px solid rgba(255,255,255,0.10)',
+        }}
+      >
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 2, flexWrap: 'wrap' }}>
+          <Box>
+            <Typography variant="overline" sx={{ letterSpacing: '0.22em', opacity: 0.78, fontWeight: 700 }}>
+              SERIES CATALOG
+            </Typography>
+            <Typography variant="h4" fontWeight={800} sx={{ mt: 1 }}>
+              {intl.formatMessage({ id: 'series.list.title' })}
+            </Typography>
+            <Typography sx={{ mt: 1.2, color: 'rgba(235,245,255,0.84)', maxWidth: 760 }}>
+              {search.lang === 'en'
+                ? 'Filter genres, browse ratings, and jump into reviews from one cinematic-looking catalog.'
+                : 'Обирай жанри, переглядай рейтинги та переходь у відгуки з одного каталогу з більш кінематографічним вайбом.'}
+            </Typography>
+          </Box>
+          {isAdmin && (
+            <Button
+              component={Link}
+              href={`${SERIES_NEW}?${new URLSearchParams(paramsAsStrings).toString()}`}
+              variant="contained"
+              color="secondary"
+              sx={{
+                px: 2.4,
+                py: 1.2,
+                borderRadius: 4,
+                background: 'linear-gradient(135deg, #ff7a18 0%, #ff5b2e 100%)',
+                boxShadow: '0 14px 30px rgba(255, 91, 46, 0.28)',
+              }}
+            >
+              {intl.formatMessage({ id: 'series.add' })}
+            </Button>
+          )}
+        </Box>
       </Box>
 
       <SeriesFilters
@@ -143,10 +179,28 @@ export default function SeriesListPage() {
 
       {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
 
-      <TableContainer component={Paper}>
+      <TableContainer
+        component={Paper}
+        sx={{
+          background: 'linear-gradient(180deg, rgba(237,245,255,0.97) 0%, rgba(223,236,252,0.95) 100%)',
+          border: '1px solid rgba(76, 123, 184, 0.20)',
+          boxShadow: '0 24px 50px rgba(34, 68, 111, 0.14)',
+          backdropFilter: 'blur(12px)',
+        }}
+      >
         <Table>
           <TableHead>
-            <TableRow>
+            <TableRow
+              sx={{
+                '& .MuiTableCell-root': {
+                  bgcolor: 'rgba(16, 36, 60, 0.94)',
+                  color: '#eef7ff',
+                  borderBottom: '1px solid rgba(255,255,255,0.08)',
+                  fontWeight: 800,
+                  letterSpacing: '0.03em',
+                },
+              }}
+            >
               <TableCell>{intl.formatMessage({ id: 'series.title' })}</TableCell>
               <TableCell>{intl.formatMessage({ id: 'series.genre' })}</TableCell>
               <TableCell>{intl.formatMessage({ id: 'series.rating' })}</TableCell>
@@ -158,11 +212,27 @@ export default function SeriesListPage() {
           </TableHead>
           <TableBody>
             {items.map((series) => (
-              <TableRow key={series.id} hover sx={isAdmin ? { '& .delete-action': { opacity: 0 }, '&:hover .delete-action': { opacity: 1 } } : undefined}>
-                <TableCell>
+              <TableRow
+                key={series.id}
+                hover
+                sx={isAdmin
+                  ? {
+                      '& .delete-action': { opacity: 0 },
+                      '&:hover .delete-action': { opacity: 1 },
+                      '&:hover': {
+                        bgcolor: 'rgba(224, 59, 78, 0.10)',
+                      },
+                    }
+                  : {
+                      '&:hover': {
+                        bgcolor: 'rgba(224, 59, 78, 0.10)',
+                      },
+                    }}
+              >
+                <TableCell sx={{ fontWeight: 700 }}>
                   <Link
                     href={`${seriesDetails(series.id)}?${new URLSearchParams(paramsAsStrings).toString()}`}
-                    style={{ color: 'inherit', textDecoration: 'none', fontWeight: 600 }}
+                    style={{ color: '#17385d', textDecoration: 'none', fontWeight: 700 }}
                   >
                     {localizeSeriesTitle(series.title, search.lang)}
                   </Link>
@@ -205,3 +275,4 @@ export default function SeriesListPage() {
     </Container>
   );
 }
+
