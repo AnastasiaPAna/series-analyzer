@@ -12,6 +12,7 @@ public class SeriesResponse {
     private double rating;
     private int year;
     private boolean finished;
+    private String trailerUrl;
     private StudioResponse studio;
 
     public SeriesResponse(Long id,
@@ -22,6 +23,18 @@ public class SeriesResponse {
                           int year,
                           boolean finished,
                           StudioResponse studio) {
+        this(id, title, genre, seasons, rating, year, finished, null, studio);
+    }
+
+    public SeriesResponse(Long id,
+                          String title,
+                          String genre,
+                          int seasons,
+                          double rating,
+                          int year,
+                          boolean finished,
+                          String trailerUrl,
+                          StudioResponse studio) {
         this.id = id;
         this.title = title;
         this.genre = genre;
@@ -29,6 +42,7 @@ public class SeriesResponse {
         this.rating = rating;
         this.year = year;
         this.finished = finished;
+        this.trailerUrl = trailerUrl;
         this.studio = studio;
     }
 
@@ -39,5 +53,6 @@ public class SeriesResponse {
     public double getRating() { return rating; }
     public int getYear() { return year; }
     public boolean isFinished() { return finished; }
+    public String getTrailerUrl() { return trailerUrl; }
     public StudioResponse getStudio() { return studio; }
 }

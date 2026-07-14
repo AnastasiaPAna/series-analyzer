@@ -1,327 +1,152 @@
 # Series Analyzer
 
-Проєкт закриває завдання `1-4` курсу FullStack Developer в одному репозиторії:
+Full-stack application for managing a series catalog, reviews, subscriber profiles, and asynchronous email notifications.
 
-- `Block 1` — консольна Java-логіка для роботи з даними серіалів
-- `Block 2` — Spring Boot REST API для `Series` і `Studios`
-- `Block 3` — окремий SPA frontend для каталогу, статистики, пошуку, CRUD і роботи з відгуками
-- `Block 4` — окремий Node.js + TypeScript reviews service на MongoDB
+## Stack
 
-Основна сторінка для демонстрації:
-- `http://localhost:9090/`
+- `Spring Boot` - main backend
+- `Next.js + TypeScript + Material UI + react-intl` - frontend
+- `Node.js + TypeScript + MongoDB` - reviews service
+- `Spring Boot + RabbitMQ + Elasticsearch + SMTP` - email delivery service
+- `Docker Compose` - startup of the whole environment
 
-Технічна перевірка reviews service:
-- `http://localhost:3010/health`
+## Run
 
-## Технології
+Prerequisite:
 
-- Java 21
-- Spring Boot 3.2.5
-- Spring Web, Validation, Data JPA
-- PostgreSQL
-- Liquibase
-- Node.js
-- TypeScript
-- Express
-- MongoDB + Mongoose
-- Vanilla SPA frontend
-- Bootstrap 5
-- JUnit 5
-- Vitest / Supertest
-- Docker Compose
+- `Docker Desktop` is installed and running
 
-## Структура проєкту
+Start the whole project from the repository root:
 
-- `src/main/java` — backend на Spring Boot
-- `src/main/resources/db` — Liquibase міграції та seed
-- `src/main/resources/static/spa` — зібраний frontend, який віддає Spring
-- `block3-spa/` — окремий SPA frontend для блоку 3
-- `block4-reviews-service/` — окремий reviews service для блоку 4
-- `data/` — приклади даних для імпорту
-- `postman/Series API.postman_collection.json` — Postman collection
-- `start-app.ps1`, `start-app.bat` — швидкий запуск
-- `stop-app.ps1` — зупинка сервісів і локальних БД
+```powershell
+docker compose up --build -d
+```
 
-## Найпростіший запуск
-
-### Передумови
-
-Потрібно мати:
-
-- Java 21
-- Node.js
-- Docker Desktop
-
-### Варіант 1. Один клік
-
-У корені проєкту:
-
-- запусти [start-app.bat](/d:/task_block1-main/task_block1-main/start-app.bat)
-
-Або в PowerShell:
+Alternative startup:
 
 ```powershell
 .\start-app.ps1
 ```
 
-Скрипт автоматично:
-
-- запустить Docker Desktop, якщо він вимкнений
-- підніме PostgreSQL і MongoDB
-- збере `block3-spa`, якщо були зміни
-- збере Spring Boot застосунок, якщо були зміни
-- збере reviews service, якщо були зміни
-- підніме обидва сервіси
-- відкриє `http://localhost:9090/`
-
-Зупинка:
+Stop the project:
 
 ```powershell
 .\stop-app.ps1
 ```
 
-### Варіант 2. Ручний запуск
+On the first launch the initial studios and series are loaded automatically.
 
-Підняти локальні БД:
+## Main URLs
 
-```powershell
-docker compose up -d
-```
+Use these URLs for review:
 
-Потім у корені:
+- Frontend: `http://localhost:3000/`
+- Reviews service health-check: `http://localhost:3010/health`
+- Email service health-check: `http://localhost:3021/health`
+- Mailpit UI: `http://localhost:8026`
 
-```powershell
-mvn -DskipTests package
-java -jar target\series-analyzer-1.0.0.jar
-```
+## Implemented functionality
 
-В окремому терміналі:
+### Main application
 
-```powershell
-cd block4-reviews-service
-npm install
-npm run build
-npm start
-```
-
-Якщо окремо треба оновити frontend блоку 3:
-
-```powershell
-cd block3-spa
-npm run build
-```
-
-## Доступні URL
-
-- Frontend: `http://localhost:9090/`
-- Series API: `http://localhost:9090/api/v1/series`
-- Studios API: `http://localhost:9090/api/v1/studios`
-- Statistics API: `http://localhost:9090/api/v1/statistics/{attribute}`
-- Reviews health-check: `http://localhost:3010/health`
-- Reviews API: `http://localhost:3010/api/entity3`
-
-## Що реалізовано по блоках
-
-### Block 1
-
-- завантаження та обробка даних серіалів
-- фільтрація, пошук, статистика
-- експорт
-- консольний сценарій роботи
-
-### Block 2
-
-- CRUD для `Studios`
-- CRUD для `Series`
-- пошук серіалів
-- top endpoint
-- пакетні endpoint-и `_list` і `_report`
-- імпорт JSON
-- endpoint статистики
-- валідація
-- інтеграційні та unit тести
-
-### Block 3
-
-- окремий SPA frontend у папці `block3-spa`
-- пошук серіалів
-- фільтри по студії, жанру, року, рейтингу, статусу
-- статус-фільтри `Finished / In progress / Planned`
-- створення, редагування й видалення серіалів
-- створення, редагування й видалення студій
-- перегляд статистики
-- імпорт JSON
-- генерація звітів
-- перемикач мов `UA / EN`
-- developer mode для керування службовими інструментами
-
-### Block 4
-
-- окремий Node.js reviews service у папці `block4-reviews-service`
-- `POST /api/entity3` — створення review
-- `GET /api/entity3` — список review для одного серіалу
-- `POST /api/entity3/_counts` — кількість review для списку серіалів
-- перевірка існування `Series` через Spring API
-- валідація через Zod
-- інтеграція reviews прямо у frontend блоку 3
-
-## REST API
-
-### Studios
-
-```http
-GET    /api/v1/studios
-POST   /api/v1/studios
-PUT    /api/v1/studios/{id}
-DELETE /api/v1/studios/{id}
-```
-
-Приклад `POST /api/v1/studios`:
-
-```json
-{
-  "name": "HBO",
-  "country": "USA"
-}
-```
-
-### Series
-
-```http
-GET    /api/v1/series
-GET    /api/v1/series/{id}
-GET    /api/v1/series/top?limit=5
-GET    /api/v1/series/search?query=game
-POST   /api/v1/series
-PUT    /api/v1/series/{id}
-DELETE /api/v1/series/{id}
-POST   /api/v1/series/_list
-POST   /api/v1/series/_report
-GET    /api/v1/series/_report/{jobId}
-POST   /api/v1/series/upload
-```
-
-Приклад `POST /api/v1/series`:
-
-```json
-{
-  "title": "Wednesday",
-  "genre": "Mystery, Drama",
-  "seasons": 2,
-  "rating": 8.1,
-  "year": 2022,
-  "finished": false,
-  "studioId": 2
-}
-```
-
-### Statistics
-
-```http
-GET /api/v1/statistics/{attribute}
-```
-
-Підтримувані атрибути:
-
-- `title`
-- `studio`
-- `genre`
-- `seasons`
-- `rating`
-- `year`
-- `finished`
+- series list and details
+- studio data
+- search, filters, and pagination
+- create, edit, and delete series
+- statistics page
+- top 5 page
+- `UA / EN` localization
 
 ### Reviews service
+
+- separate microservice for reviews
+- review creation with validation
+- automatic `publishedAt` handling
+- validation of related series existence through the main backend
+- review list for one series with pagination
+- review counts for a list of series ids through aggregation
+- admin review moderation
+- integration tests for create, list, counts, recent, update, and delete scenarios
+
+Main endpoints:
 
 ```http
 GET  /health
 POST /api/entity3
 GET  /api/entity3?entity1Id=1&size=5&from=0
 POST /api/entity3/_counts
+GET  /api/entity3/recent?size=10
+PUT  /api/entity3/:id
+DELETE /api/entity3/:id
 ```
 
-Приклад `POST /api/entity3`:
+### Email delivery service
 
-```json
-{
-  "seriesId": 1,
-  "reviewerName": "Nastya",
-  "comment": "Strong atmosphere and good pacing.",
-  "rating": 9
-}
+- separate Java microservice for email delivery
+- asynchronous message consumption from `RabbitMQ`
+- message storage in `Elasticsearch`
+- SMTP delivery through `JavaMailSender`
+- statuses `PENDING`, `SENT`, `FAILED`
+- storing `errorMessage`, `attemptCount`, `lastAttemptAt`, and `sentAt`
+- retry of failed messages every 5 minutes
+- integration with the main backend on series creation and on new season release
+- integration tests for successful send, failed send, successful retry, failed retry, and admin API access
+
+Main endpoints:
+
+```http
+GET /health
+GET /api/emails
+GET /api/emails?status=FAILED
+GET /api/admin/messages
+POST /api/admin/messages/retry-failed
+POST /api/admin/messages/{id}/retry
+GET /api/admin/email-settings
+PUT /api/admin/email-settings
 ```
 
-## База даних
+## Admin access
 
-Через `docker-compose.yml` піднімаються:
+Admin mode is enabled through the `Admin` button in the frontend header.
 
-- PostgreSQL на `localhost:5433`
-- MongoDB на `localhost:27017`
+Credentials:
 
-Liquibase використовує:
+- login: `admin`
+- password: `admin123`
 
-- `src/main/resources/db/changelog/db.changelog-master.yaml`
+After login the following actions become available:
 
-Основні таблиці:
+- series create, edit, and delete
+- review moderation
+- email control page
+- SMTP settings and notification template management
 
-- `studios`
-- `series`
+## Email configuration
 
-## Конфігурація
+Email-related configuration is stored in `.env`.
 
-Spring читає `.env` з кореня проєкту.
+Main variables:
 
-Ключові змінні:
+- `RABBITMQ_HOST`
+- `RABBITMQ_PORT`
+- `RABBITMQ_USERNAME`
+- `RABBITMQ_PASSWORD`
+- `NOTIFICATION_ADMIN_EMAIL`
+- `EMAIL_NOTIFICATION_QUEUE`
+- `EMAIL_NOTIFICATION_EXCHANGE`
+- `EMAIL_NOTIFICATION_ROUTING_KEY`
+- `EMAIL_SMTP_HOST`
+- `EMAIL_SMTP_PORT`
+- `EMAIL_SMTP_USERNAME`
+- `EMAIL_SMTP_PASSWORD`
+- `EMAIL_SMTP_AUTH`
+- `EMAIL_SMTP_STARTTLS`
+- `EMAIL_SMTP_FROM`
+- `EMAIL_RETRY_DELAY_MS`
 
-```env
-APP_PORT=9090
-DB_HOST=localhost
-DB_PORT=5433
-DB_NAME=series_db
-DB_USER=postgres
-DB_PASSWORD=
-DB_SEED=seed
-```
+## Structure
 
-Для `block4-reviews-service` локальний `.env` уже підготовлений під стандартний запуск.
-
-## Тести
-
-### Spring
-
-```powershell
-mvn test
-```
-
-### Reviews service
-
-```powershell
-cd block4-reviews-service
-npm test
-```
-
-## Швидка перевірка перед здачею
-
-1. Запусти `start-app.bat`
-2. Відкрий `http://localhost:9090/`
-3. Перевір пошук
-4. Створи новий серіал
-5. Обери від 1 до 3 жанрів
-6. Відкрий статистику
-7. Відкрий reviews для будь-якого серіалу
-8. Додай review
-9. За потреби відкрий `http://localhost:3010/health`
-
-## Для захисту
-
-Найзручніше показувати проєкт так:
-
-1. `Block 1` — коротко сказати, що є консольна логіка та обробка даних
-2. `Block 2` — показати REST API на `9090`
-3. `Block 3` — показати SPA frontend на `9090`
-4. `Block 4` — показати reviews у UI та health-check на `3010`
-
-## Додатково
-
-- Reviews service README: [block4-reviews-service/README.md](/d:/task_block1-main/task_block1-main/block4-reviews-service/README.md:1)
-- SPA frontend README: [block3-spa/README.md](/d:/task_block1-main/task_block1-main/block3-spa/README.md:1)
+- `src/main/java` - Spring Boot backend
+- `series-frontend/` - frontend
+- `block4-reviews-service/` - reviews service
+- `block5-email-service/` - email delivery service

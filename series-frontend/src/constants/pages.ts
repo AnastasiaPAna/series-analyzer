@@ -1,0 +1,10 @@
+export const HOME_PAGE = '/';
+export const SERIES_LIST = '/series';
+export const SERIES_NEW = '/series/new';
+export const TOP_PAGE = '/top';
+export const STATISTICS_PAGE = '/statistics';
+export const REVIEWS_PAGE = '/reviews';
+export const EMAIL_CONTROL_PAGE = '/email-control';
+export const DEVELOPER_PAGE = '/developer';
+export const PROFILE_PAGE = '/profile';
+export const seriesDetails = (id: number | string) => `/series/${id}`;

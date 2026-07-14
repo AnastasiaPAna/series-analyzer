@@ -11,7 +11,6 @@
       "country": "USA"
     }
   },
-
   {
     "title": "Венздей",
     "genre": "Mystery, Comedy, Fantasy, Detective, Teen Drama",
@@ -24,7 +23,6 @@
       "country": "USA"
     }
   },
-
   {
     "title": "Щоденники вампіра",
     "genre": "Fantasy, Drama, Romance, Supernatural, Horror",
@@ -37,7 +35,6 @@
       "country": "USA"
     }
   },
-
   {
     "title": "Первородні",
     "genre": "Fantasy, Drama, Supernatural, Horror",
@@ -50,7 +47,6 @@
       "country": "USA"
     }
   },
-
   {
     "title": "Спадок",
     "genre": "Fantasy, Drama, Adventure, Supernatural",
@@ -63,25 +59,23 @@
       "country": "USA"
     }
   },
-
   {
-    "title": "Щит",
-    "genre": "Crime, Drama, Thriller",
+    "title": "?????? ?.?.?.",
+    "genre": "Marvel Universe, Science Fiction, Drama",
     "seasons": 7,
-    "rating": 8.7,
-    "year": 2002,
+    "rating": 7.5,
+    "year": 2013,
     "finished": true,
     "studio": {
-      "name": "Sony Pictures Television",
+      "name": "Marvel Television",
       "country": "USA"
     }
   },
-
   {
     "title": "Хороший лікар",
     "genre": "Medical Drama",
     "seasons": 7,
-    "rating": 8.0,
+    "rating": 8,
     "year": 2017,
     "finished": false,
     "studio": {
@@ -89,7 +83,6 @@
       "country": "USA"
     }
   },
-
   {
     "title": "Ключі Локів",
     "genre": "Fantasy, Drama, Adventure, Political Drama",
@@ -102,7 +95,6 @@
       "country": "USA"
     }
   },
-
   {
     "title": "Гра престолів",
     "genre": "Fantasy, Mystery, Drama, Horror",

@@ -1,0 +1,68 @@
+databaseChangeLog:
+  - changeSet:
+      id: 012-marvel-refresh
+      author: series
+      context: seed
+      changes:
+        - insert:
+            tableName: studios
+            columns:
+              - column: { name: id, valueNumeric: 7 }
+              - column: { name: name, value: "Marvel Television" }
+              - column: { name: country, value: "USA" }
+
+        - update:
+            tableName: series
+            columns:
+              - column: { name: title, value: "Agents of S.H.I.E.L.D." }
+              - column: { name: genre, value: "Marvel Universe, Science Fiction, Drama" }
+              - column: { name: seasons, valueNumeric: 7 }
+              - column: { name: rating, valueNumeric: 7.5 }
+              - column: { name: year, valueNumeric: 2013 }
+              - column: { name: finished, valueBoolean: true }
+              - column: { name: studio_id, valueNumeric: 7 }
+            where: id = 6
+
+        - insert:
+            tableName: series
+            columns:
+              - column: { name: title, value: "Loki" }
+              - column: { name: genre, value: "Marvel Universe, Science Fiction, Mystery" }
+              - column: { name: seasons, valueNumeric: 2 }
+              - column: { name: rating, valueNumeric: 8.2 }
+              - column: { name: year, valueNumeric: 2021 }
+              - column: { name: finished, valueBoolean: true }
+              - column: { name: studio_id, valueNumeric: 7 }
+
+        - insert:
+            tableName: series
+            columns:
+              - column: { name: title, value: "WandaVision" }
+              - column: { name: genre, value: "Marvel Universe, Mystery, Drama" }
+              - column: { name: seasons, valueNumeric: 1 }
+              - column: { name: rating, valueNumeric: 7.9 }
+              - column: { name: year, valueNumeric: 2021 }
+              - column: { name: finished, valueBoolean: true }
+              - column: { name: studio_id, valueNumeric: 7 }
+
+        - insert:
+            tableName: series
+            columns:
+              - column: { name: title, value: "Moon Knight" }
+              - column: { name: genre, value: "Marvel Universe, Thriller, Mystery" }
+              - column: { name: seasons, valueNumeric: 1 }
+              - column: { name: rating, valueNumeric: 7.3 }
+              - column: { name: year, valueNumeric: 2022 }
+              - column: { name: finished, valueBoolean: false }
+              - column: { name: studio_id, valueNumeric: 7 }
+
+        - insert:
+            tableName: series
+            columns:
+              - column: { name: title, value: "Daredevil" }
+              - column: { name: genre, value: "Marvel Universe, Crime, Drama" }
+              - column: { name: seasons, valueNumeric: 3 }
+              - column: { name: rating, valueNumeric: 8.6 }
+              - column: { name: year, valueNumeric: 2015 }
+              - column: { name: finished, valueBoolean: true }
+              - column: { name: studio_id, valueNumeric: 7 }

@@ -29,15 +29,21 @@ public class SeriesMapper {
                 series.getRating(),
                 series.getYear(),
                 series.isFinished(),
+                series.getTrailerUrl(),
                 studioDto
         );
     }
 
     public static Series toEntity(SeriesRequest request) {
-        // finished у DTO Boolean -> entity boolean
         boolean finished = Boolean.TRUE.equals(request.getFinished());
+        String trailerUrl = request.getTrailerUrl();
+        if (trailerUrl != null) {
+            trailerUrl = trailerUrl.trim();
+            if (trailerUrl.isBlank()) {
+                trailerUrl = null;
+            }
+        }
 
-        // studio тут null, бо ми проставляємо студію в SeriesService по studioId
         return new Series(
                 request.getTitle(),
                 request.getGenre(),
@@ -45,7 +51,8 @@ public class SeriesMapper {
                 request.getRating(),
                 request.getYear(),
                 finished,
-                null
+                null,
+                trailerUrl
         );
     }
 }

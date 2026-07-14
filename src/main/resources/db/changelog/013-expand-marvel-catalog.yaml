@@ -1,0 +1,27 @@
+databaseChangeLog:
+  - changeSet:
+      id: 013-expand-marvel-catalog
+      author: series
+      context: seed
+      changes:
+        - insert:
+            tableName: series
+            columns:
+              - column: { name: title, value: "Jessica Jones" }
+              - column: { name: genre, value: "Marvel Universe, Crime, Thriller" }
+              - column: { name: seasons, valueNumeric: 3 }
+              - column: { name: rating, valueNumeric: 7.9 }
+              - column: { name: year, valueNumeric: 2015 }
+              - column: { name: finished, valueBoolean: true }
+              - column: { name: studio_id, valueNumeric: 7 }
+
+        - insert:
+            tableName: series
+            columns:
+              - column: { name: title, value: "Hawkeye" }
+              - column: { name: genre, value: "Marvel Universe, Adventure, Comedy" }
+              - column: { name: seasons, valueNumeric: 1 }
+              - column: { name: rating, valueNumeric: 7.5 }
+              - column: { name: year, valueNumeric: 2021 }
+              - column: { name: finished, valueBoolean: true }
+              - column: { name: studio_id, valueNumeric: 7 }

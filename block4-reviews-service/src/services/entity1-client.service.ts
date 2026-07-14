@@ -1,6 +1,11 @@
 import axios, { AxiosInstance } from "axios";
 import { AppError } from "../types/app-error";
 
+type SeriesLookupResponse = {
+  id: number;
+  title: string;
+};
+
 export class Entity1ClientService {
   private readonly httpClient: AxiosInstance;
 
@@ -13,7 +18,7 @@ export class Entity1ClientService {
 
   async ensureSeriesExists(seriesId: number): Promise<void> {
     try {
-      await this.httpClient.get(`/api/v1/series/${seriesId}`);
+      await this.getSeries(seriesId);
     } catch (error) {
       if (axios.isAxiosError(error) && error.response?.status === 404) {
         throw new AppError(`Series with id ${seriesId} was not found`, 404);
@@ -21,5 +26,10 @@ export class Entity1ClientService {
 
       throw new AppError("Failed to validate series in the source service", 502);
     }
+  }
+
+  async getSeries(seriesId: number): Promise<SeriesLookupResponse> {
+    const response = await this.httpClient.get<SeriesLookupResponse>(`/api/v1/series/${seriesId}`);
+    return response.data;
   }
 }

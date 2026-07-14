@@ -114,11 +114,23 @@ public class SeriesService {
         }
 
         if (genre != null && !genre.isBlank()) {
-            String like = "%" + genre.trim().toLowerCase() + "%";
-            spec = spec.and((root, query, cb) ->
-                    cb.like(cb.lower(root.get("genre")), like));
+            String[] genres = java.util.Arrays.stream(genre.split(","))
+                    .map(String::trim)
+                    .filter(value -> !value.isBlank())
+                    .map(String::toLowerCase)
+                    .toArray(String[]::new);
+
+            if (genres.length > 0) {
+                spec = spec.and((root, query, cb) -> {
+                    jakarta.persistence.criteria.Predicate[] predicates = java.util.Arrays.stream(genres)
+                            .map(value -> cb.like(cb.lower(root.get("genre")), "%" + value + "%"))
+                            .toArray(jakarta.persistence.criteria.Predicate[]::new);
+                    return cb.or(predicates);
+                });
+            }
         }
 
         return repository.findAll(spec, pageable);
     }
 }
+

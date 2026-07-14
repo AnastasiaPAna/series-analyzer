@@ -1,0 +1,38 @@
+server:
+  port: ${APP_PORT:3020}
+
+spring:
+  application:
+    name: block5-email-service
+  rabbitmq:
+    host: ${RABBITMQ_HOST:localhost}
+    port: ${RABBITMQ_PORT:5672}
+    username: ${RABBITMQ_USERNAME:guest}
+    password: ${RABBITMQ_PASSWORD:guest}
+  elasticsearch:
+    uris: ${ELASTICSEARCH_URI:http://localhost:9200}
+  mail:
+    host: ${EMAIL_SMTP_HOST:localhost}
+    port: ${EMAIL_SMTP_PORT:1025}
+    username: ${EMAIL_SMTP_USERNAME:}
+    password: ${EMAIL_SMTP_PASSWORD:}
+    properties:
+      mail:
+        smtp:
+          auth: ${EMAIL_SMTP_AUTH:false}
+          starttls:
+            enable: ${EMAIL_SMTP_STARTTLS:false}
+
+app:
+  admin:
+    access-token: ${ADMIN_ACCESS_TOKEN:series-admin-access}
+  email:
+    queue: ${EMAIL_NOTIFICATION_QUEUE:series-email.notifications}
+    exchange: ${EMAIL_NOTIFICATION_EXCHANGE:series.notifications}
+    routing-key: ${EMAIL_NOTIFICATION_ROUTING_KEY:email.notification}
+    from: ${EMAIL_SMTP_FROM:no-reply@series.local}
+    elasticsearch:
+      init:
+        enabled: ${EMAIL_ELASTICSEARCH_INIT_ENABLED:true}
+    retry:
+      fixed-delay-ms: ${EMAIL_RETRY_DELAY_MS:300000}

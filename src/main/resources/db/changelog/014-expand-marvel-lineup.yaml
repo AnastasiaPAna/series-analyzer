@@ -1,0 +1,27 @@
+﻿databaseChangeLog:
+  - changeSet:
+      id: 014-expand-marvel-lineup
+      author: series
+      context: seed
+      changes:
+        - insert:
+            tableName: series
+            columns:
+              - column: { name: title, value: "The Falcon and the Winter Soldier" }
+              - column: { name: genre, value: "Marvel Universe, Adventure, Drama" }
+              - column: { name: seasons, valueNumeric: 1 }
+              - column: { name: rating, valueNumeric: 7.1 }
+              - column: { name: year, valueNumeric: 2021 }
+              - column: { name: finished, valueBoolean: true }
+              - column: { name: studio_id, valueNumeric: 7 }
+
+        - insert:
+            tableName: series
+            columns:
+              - column: { name: title, value: "Ms. Marvel" }
+              - column: { name: genre, value: "Marvel Universe, Adventure, Comedy" }
+              - column: { name: seasons, valueNumeric: 1 }
+              - column: { name: rating, valueNumeric: 6.2 }
+              - column: { name: year, valueNumeric: 2022 }
+              - column: { name: finished, valueBoolean: true }
+              - column: { name: studio_id, valueNumeric: 7 }

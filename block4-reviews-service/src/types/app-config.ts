@@ -3,4 +3,5 @@ export interface AppConfig {
   mongodbUri: string;
   entity1ServiceUrl: string;
   requestTimeoutMs: number;
+  adminAccessToken: string;
 }

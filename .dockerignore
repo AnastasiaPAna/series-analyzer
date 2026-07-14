@@ -1,0 +1,16 @@
+.git
+.github
+.idea
+.vscode
+.runtime
+target
+node_modules
+coverage
+dist
+.next
+block4-reviews-service/node_modules
+block4-reviews-service/dist
+series-frontend/node_modules
+series-frontend/.next
+block5-email-service
+Task_And_Pack

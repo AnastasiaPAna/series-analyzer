@@ -1,0 +1,12 @@
+databaseChangeLog:
+  - changeSet:
+      id: 011-update-good-doctor-status
+      author: series
+      context: seed
+      changes:
+        - update:
+            tableName: series
+            columns:
+              - column: { name: seasons, valueNumeric: 7 }
+              - column: { name: finished, valueBoolean: true }
+            where: id = 7

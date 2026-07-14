@@ -9,6 +9,7 @@ import org.example.series.api.dto.SeriesImportItem;
 import org.example.series.api.dto.SeriesRequest;
 import org.example.series.api.dto.SeriesResponse;
 import org.example.series.api.mapper.SeriesMapper;
+import org.example.series.integration.notification.SeriesCreatedNotificationPublisher;
 import org.example.series.core.export.ReportCsvWriter;
 import org.example.series.core.export.ReportExcelWriter;
 import org.example.series.core.export.ReportJsonWriter;
@@ -45,16 +46,19 @@ public class SeriesApiService {
     private final StudioService studioService;
     private final ReportStore reportStore;
     private final Validator validator;
+    private final SeriesCreatedNotificationPublisher notificationPublisher;
     private final Gson gson = new Gson();
 
     public SeriesApiService(SeriesService seriesService,
                            StudioService studioService,
                            ReportStore reportStore,
-                           Validator validator) {
+                           Validator validator,
+                           SeriesCreatedNotificationPublisher notificationPublisher) {
         this.seriesService = seriesService;
         this.studioService = studioService;
         this.reportStore = reportStore;
         this.validator = validator;
+        this.notificationPublisher = notificationPublisher;
     }
 
     // -------- CRUD --------
@@ -62,6 +66,7 @@ public class SeriesApiService {
     public SeriesResponse create(SeriesRequest request) {
         Series entity = SeriesMapper.toEntity(request);
         Series saved = seriesService.create(entity, request.getStudioId());
+        notificationPublisher.publishSeriesCreated(saved);
         return SeriesMapper.toResponse(saved);
     }
 
@@ -77,8 +82,11 @@ public class SeriesApiService {
     }
 
     public SeriesResponse update(Long id, SeriesRequest request) {
+        Series existing = seriesService.findById(id);
+        int previousSeasons = existing.getSeasons();
         Series entity = SeriesMapper.toEntity(request);
         Series updated = seriesService.update(id, entity, request.getStudioId());
+        notificationPublisher.publishSeasonReleased(updated, previousSeasons);
         return SeriesMapper.toResponse(updated);
     }
 
