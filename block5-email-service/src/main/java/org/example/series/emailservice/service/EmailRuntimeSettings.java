@@ -40,7 +40,7 @@ public class EmailRuntimeSettings {
         response.setSmtpHost(smtpHost);
         response.setSmtpPort(smtpPort);
         response.setSmtpUsername(smtpUsername);
-        response.setSmtpPassword(smtpPassword);
+        response.setSmtpPassword("");
         response.setSmtpAuth(smtpAuth);
         response.setSmtpStarttls(smtpStarttls);
         response.setFromEmail(fromEmail);
@@ -51,7 +51,9 @@ public class EmailRuntimeSettings {
         smtpHost = request.getSmtpHost();
         smtpPort = request.getSmtpPort();
         smtpUsername = request.getSmtpUsername() == null ? "" : request.getSmtpUsername();
-        smtpPassword = request.getSmtpPassword() == null ? "" : request.getSmtpPassword();
+        if (request.getSmtpPassword() != null && !request.getSmtpPassword().isBlank()) {
+            smtpPassword = request.getSmtpPassword();
+        }
         smtpAuth = request.isSmtpAuth();
         smtpStarttls = request.isSmtpStarttls();
         fromEmail = request.getFromEmail();

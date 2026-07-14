@@ -32,6 +32,9 @@ PUT  /api/admin/email-settings
 
 ## Standalone run
 
+The main project Docker Compose exposes the email service on 3021 and Mailpit on 8026.
+This standalone compose file keeps the service-local ports 3020 and 8025 for isolated email-service checks.
+
 From the repository root:
 
 ```powershell
